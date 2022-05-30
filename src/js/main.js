@@ -1,9 +1,5 @@
 "use strict";
 
-// TODO
-
-// What if get current line returns undefined
-
 import * as storage from "./storage.js";
 import * as regex from "./regex.js";
 
