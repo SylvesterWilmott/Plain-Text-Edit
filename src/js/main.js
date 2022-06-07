@@ -2,8 +2,10 @@
 
 import * as storage from "./storage.js";
 import * as regex from "./regex.js";
+import * as downloads from "./downloads.js";
 
-let editor; // Input element
+let editor;
+let actions;
 let docId; // The current ID of the loaded doc
 
 document.addEventListener("DOMContentLoaded", init);
@@ -11,6 +13,7 @@ window.addEventListener("load", removeOverlay);
 
 async function init() {
   editor = document.getElementById("editor");
+  actions = document.getElementById("actions");
   docId = getDocId();
 
   let options = await getOptions();
@@ -182,6 +185,14 @@ const saveData = debounce(async function (e) {
   await storage.save(docId, docData);
 }, 500);
 
+async function downloadFile() {
+  const data = await storage.load(docId, {});
+  const blob = URL.createObjectURL(
+    new Blob([data.text], { type: "text/plain" })
+  );
+  await downloads.downloadFile(blob, data.title + ".txt");
+}
+
 function addListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
@@ -189,6 +200,7 @@ function addListeners() {
   }
 
   editor.addEventListener("keydown", onEditorKeydown, false);
+  actions.addEventListener("click", onActionClicked, false);
 }
 
 // Event handlers
@@ -199,7 +211,10 @@ async function onEditorInput() {
 }
 
 function onEditorKeydown(e) {
-  if (e.key === "Tab") {
+  if (e.metaKey && e.key === "s") {
+    e.preventDefault();
+    downloadFile();
+  } else if (e.key === "Tab") {
     e.preventDefault();
     insertNode("\t");
   } else if (e.key === "Enter") {
@@ -232,6 +247,12 @@ function onEditorKeydown(e) {
         deleteNode(prefix.length);
       }
     }
+  }
+}
+
+function onActionClicked(e) {
+  if (e.target.classList.contains("download")) {
+    downloadFile();
   }
 }
 
