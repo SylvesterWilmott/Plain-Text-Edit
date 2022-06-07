@@ -26,7 +26,7 @@ body.loading {
   color: var(--primary);
   font-family: var(--font-mono);
   font-size: 17px;
-  line-height: 31px;
+  line-height: 32px;
   border: none;
   outline: none;
   min-height: 100%;
@@ -39,7 +39,7 @@ body.loading {
 
 .editor.narrow {
   padding: 64px calc((100% - 870px) / 2);
-  line-height: 31px;
+  line-height: 32px;
 }
 
 .editor.wide {
@@ -53,6 +53,39 @@ body.loading {
 
 .editor:focus::placeholder {
   color: transparent;
+}
+
+.actions {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+}
+
+.actions button {
+  appearance: none;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  height: 36px;
+  width: 40px;
+  border-radius: 6px;
+}
+
+.actions button:hover {
+  background-color: var(--quaternary);
+}
+
+.actions button:active {
+  background-color: var(--tertiary);
+}
+
+.actions button svg {
+  pointer-events: none;
+  fill: var(--tertiary);
+}
+
+.actions button:hover svg {
+  fill: var(--secondary);
 }
 
 @media only screen and (max-width: 950px) {
