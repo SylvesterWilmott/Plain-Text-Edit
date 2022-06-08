@@ -9,7 +9,7 @@
   --background: #ffffff;
   --surface: #ffffff;
   --primary: rgba(0, 0, 0, 0.85);
-  --secondary: rgba(0, 0, 0, 0.55);
+  --secondary: rgba(0, 0, 0, 0.5);
   --tertiary: rgba(0, 0, 0, 0.25);
   --quaternary: rgba(0, 0, 0, 0.08);
 }
@@ -21,7 +21,7 @@
     --background: #202124;
     --surface: #292a2d;
     --primary: rgba(255, 255, 255, 0.85);
-    --secondary: rgba(255, 255, 255, 0.55);
+    --secondary: rgba(255, 255, 255, 0.5);
     --tertiary: rgba(255, 255, 255, 0.25);
     --quaternary: rgba(255, 255, 255, 0.08);
   }
