@@ -48,7 +48,9 @@ function getDocId() {
 async function updateFavicon() {
   const textLength = editor.value.length;
 
-  if (textLength < 100) {
+  if (textLength === 0) {
+    setFavicon("../images/ui/note_length_0.png");
+  } else if (textLength < 100) {
     setFavicon("../images/ui/note_length_1.png");
   } else if (textLength < 800) {
     setFavicon("../images/ui/note_length_2.png");
