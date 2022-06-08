@@ -187,15 +187,18 @@ const saveData = debounce(async function (e) {
 
 async function downloadFile() {
   const text = editor.value;
-  const blob = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
 
   let filename = text.trim().split("\n")[0].substring(0, 75).trimEnd();
-  if (filename.indexOf(" ")) {
+  if (/\s/.test(filename)) {
     const lastSpace = filename.lastIndexOf(" ");
     filename = filename.substring(0, lastSpace).trimEnd();
   }
 
-  await downloads.downloadFile(blob, filename + ".txt");
+  try {
+    await downloads.downloadFile(text, filename + ".txt");
+  } catch {
+    console.log("Download aborted");
+  }
 }
 
 function addListeners() {

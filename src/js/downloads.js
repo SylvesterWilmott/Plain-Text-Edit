@@ -1,20 +1,19 @@
 "use strict";
 
-export function downloadFile(url, filename) {
-  return new Promise((resolve, reject) => {
-    chrome.downloads.download(
-      {
-        url: url,
-        filename: filename,
-        saveAs: true,
-        conflictAction: "prompt",
-      },
-      function () {
-        if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError.message);
-        }
-        resolve();
-      }
-    );
-  });
+export async function downloadFile(text, filename) {
+  if (window.showSaveFilePicker) {
+    const newHandle = await window.showSaveFilePicker({
+      suggestedName: filename,
+    });
+    const writableStream = await newHandle.createWritable();
+    await writableStream.write(text);
+    await writableStream.close();
+  } else {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    a.remove();
+  }
 }
