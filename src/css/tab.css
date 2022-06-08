@@ -81,10 +81,6 @@ body.loading {
 
 .actions button svg {
   pointer-events: none;
-  fill: var(--tertiary);
-}
-
-.actions button:hover svg {
   fill: var(--secondary);
 }
 
