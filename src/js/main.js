@@ -221,7 +221,7 @@ async function onEditorInput() {
 }
 
 function onEditorKeydown(e) {
-  if (e.metaKey && e.key === "s") {
+  if ((e.metaKey || e.ctrlKey) && e.key === "s") {
     e.preventDefault();
     downloadFile();
   } else if (e.key === "Tab") {
