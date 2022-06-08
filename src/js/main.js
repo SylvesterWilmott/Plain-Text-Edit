@@ -158,7 +158,7 @@ const saveData = debounce(async function (e) {
   const docData = await storage.load(docId, {});
 
   let text = editor.value;
-  let title = text.trim().split("\n")[0].substring(0, 75);
+  let title = text.trim().split("\n")[0].substring(0, 75).trimEnd();
   let date = new Date().toString();
   let caretPos = editor.selectionEnd;
 
@@ -186,11 +186,16 @@ const saveData = debounce(async function (e) {
 }, 500);
 
 async function downloadFile() {
-  const data = await storage.load(docId, {});
-  const blob = URL.createObjectURL(
-    new Blob([data.text], { type: "text/plain" })
-  );
-  await downloads.downloadFile(blob, data.title + ".txt");
+  const text = editor.value;
+  const blob = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+
+  let filename = text.trim().split("\n")[0].substring(0, 75).trimEnd();
+  if (filename.indexOf(" ")) {
+    const lastSpace = filename.lastIndexOf(" ");
+    filename = filename.substring(0, lastSpace).trimEnd();
+  }
+
+  await downloads.downloadFile(blob, filename + ".txt");
 }
 
 function addListeners() {
