@@ -1,4 +1,5 @@
 "use strict";
 
-export const ulRegex = /^(([-\*]+) {1,})(.+)?$/gm;
-export const olRegex = /^(([0-9]+)\. {1,})(.+)?$/gm;
+export const ulRegex = /^((\t*[-\*]+) {1,})(.+)?$/gm;
+export const olRegex = /^((\t*[0-9]+)\. {1,})(.+)?$/gm;
+export const clRegex = /^((\t*- ?\[x? ?\]) {1,})(.+)?$/gm;
