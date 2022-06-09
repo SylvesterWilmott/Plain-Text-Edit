@@ -199,7 +199,7 @@ async function downloadFile() {
   try {
     await downloads.downloadFile(text, filename + ".txt");
   } catch {
-    console.log("Download aborted");
+    console.log("Download failed");
   }
 }
 
@@ -211,6 +211,7 @@ function addListeners() {
 
   editor.addEventListener("keydown", onEditorKeydown, false);
   actions.addEventListener("click", onActionClicked, false);
+  document.addEventListener("keydown", onDocumentKeydown, false);
 }
 
 // Event handlers
@@ -221,10 +222,7 @@ async function onEditorInput() {
 }
 
 function onEditorKeydown(e) {
-  if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-    e.preventDefault();
-    downloadFile();
-  } else if (e.key === "Tab") {
+  if (e.key === "Tab") {
     e.preventDefault();
     insertNode("\t");
   } else if (e.key === "Enter") {
@@ -283,6 +281,13 @@ async function onStorageChanged(changes, namespace) {
       updateSpellCheck(options.spellCheck);
       addClass(editor, options.lineLength);
     }
+  }
+}
+
+function onDocumentKeydown(e) {
+  if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+    e.preventDefault();
+    downloadFile();
   }
 }
 
