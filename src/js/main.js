@@ -228,32 +228,47 @@ function onEditorKeydown(e) {
   } else if (e.key === "Enter") {
     const line = getCurrentLine();
 
-    if (line && line.match(regex.ulRegex)) {
+    let match;
+    let type;
+
+    if (line) {
+      if (line.match(regex.clRegex)) {
+        match = [...line.matchAll(regex.clRegex)][0];
+        type = "cl";
+      } else if (line.match(regex.ulRegex)) {
+        match = [...line.matchAll(regex.ulRegex)][0];
+        type = "ul";
+      } else if (line.match(regex.olRegex)) {
+        match = [...line.matchAll(regex.olRegex)][0];
+        type = "ol";
+      }
+    }
+
+    if (!match) {
+      return;
+    } else {
       e.preventDefault();
+    }
 
-      let match = [...line.matchAll(regex.ulRegex)][0];
-      let prefix = match[1];
-      let c = match[2];
-      let content = match[3];
+    let prefix = match[1];
+    let c = match[2];
+    let content = match[3];
 
-      if (content) {
+    if (type && type === "cl") {
+      c = c.replace(/x/, " ");
+    }
+
+    if (content) {
+      if (type === "ol") {
+        insertNode(
+          "\n",
+          c.replace(/[0-9]+/, (parseInt(c) + 1).toString()) + "." + " "
+        );
+      } else {
         insertNode("\n", c + " ");
-      } else {
-        deleteNode(prefix.length);
       }
-    } else if (line && line.match(regex.olRegex)) {
-      e.preventDefault();
-
-      let match = [...line.matchAll(regex.olRegex)][0];
-      let prefix = match[1];
-      let n = match[2];
-      let content = match[3];
-
-      if (content) {
-        insertNode("\n", (parseInt(n) + 1).toString() + ". ");
-      } else {
-        deleteNode(prefix.length);
-      }
+    } else {
+      deleteNode(prefix.length);
     }
   }
 }
