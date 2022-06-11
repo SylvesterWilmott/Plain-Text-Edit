@@ -288,6 +288,7 @@ async function onStorageChanged(changes, namespace) {
 
     if (data.text) {
       updateDisplay(data);
+      updateFavicon();
     }
   }
 
