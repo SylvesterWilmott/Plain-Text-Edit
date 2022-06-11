@@ -104,6 +104,8 @@ async function onMenuClick(info) {
       lineLength: "narrow",
     });
 
+    console.log("option");
+
     switch (menuId) {
       case "spellCheck":
         options.spellCheck = info.checked;
@@ -140,7 +142,7 @@ async function updateCheckboxControls() {
     spellCheck: true,
   });
 
-  await restoreCheckmark("spellCheck", options.spellCheck);
+  await restoreCheckmark("options__spellCheck", options.spellCheck);
 }
 
 async function updateRadioControls() {
@@ -151,22 +153,22 @@ async function updateRadioControls() {
 
   switch (options.sort) {
     case "title":
-      await restoreCheckmark("sort_title", true);
+      await restoreCheckmark("options__sort_title", true);
       break;
     case "modified":
-      await restoreCheckmark("sort_modified", true);
+      await restoreCheckmark("options__sort_modified", true);
       break;
     case "created":
-      await restoreCheckmark("sort_created", true);
+      await restoreCheckmark("options__sort_created", true);
       break;
   }
 
   switch (options.lineLength) {
     case "narrow":
-      await restoreCheckmark("lineLength_narrow", true);
+      await restoreCheckmark("options__lineLength_narrow", true);
       break;
     case "wide":
-      await restoreCheckmark("lineLength_wide", true);
+      await restoreCheckmark("options__lineLength_wide", true);
       break;
   }
 }
