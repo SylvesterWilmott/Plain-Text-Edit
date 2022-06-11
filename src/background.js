@@ -11,21 +11,21 @@ let menu = [
     type: "normal",
   },
   {
-    id: "sort_title",
+    id: "options__sort_title",
     title: chrome.i18n.getMessage("menu_sort_title"),
     contexts: ["action"],
     parentId: "sort",
     type: "radio",
   },
   {
-    id: "sort_modified",
+    id: "options__sort_modified",
     title: chrome.i18n.getMessage("menu_sort_modified"),
     contexts: ["action"],
     parentId: "sort",
     type: "radio",
   },
   {
-    id: "sort_created",
+    id: "options__sort_created",
     title: chrome.i18n.getMessage("menu_sort_created"),
     contexts: ["action"],
     parentId: "sort",
@@ -43,21 +43,21 @@ let menu = [
     type: "normal",
   },
   {
-    id: "lineLength_narrow",
+    id: "options__lineLength_narrow",
     title: chrome.i18n.getMessage("menu_lineLength_narrow"),
     contexts: ["action"],
     parentId: "lineLength",
     type: "radio",
   },
   {
-    id: "lineLength_wide",
+    id: "options__lineLength_wide",
     title: chrome.i18n.getMessage("menu_lineLength_wide"),
     contexts: ["action"],
     parentId: "lineLength",
     type: "radio",
   },
   {
-    id: "spellCheck",
+    id: "options__spellCheck",
     title: chrome.i18n.getMessage("menu_spellCheck"),
     contexts: ["action"],
     type: "checkbox",
@@ -95,46 +95,44 @@ function createMenuItem(item) {
 
 async function onMenuClick(info) {
   const menuId = info.menuItemId;
+  const optionRegex = /^options__/gm;
 
-  let options = await storage.load("options", {
-    spellCheck: true,
-    sort: "modified",
-    lineLength: "narrow",
-  });
+  if (menuId.match(optionRegex)) {
+    let options = await storage.load("options", {
+      spellCheck: true,
+      sort: "modified",
+      lineLength: "narrow",
+    });
 
-  switch (menuId) {
-    case "spellCheck":
-      options.spellCheck = info.checked;
-      await saveOptions(options);
-      break;
-    case "sort_title":
-      options.sort = "title";
-      await saveOptions(options);
-      break;
-    case "sort_modified":
-      options.sort = "modified";
-      await saveOptions(options);
-      break;
-    case "sort_created":
-      options.sort = "created";
-      await saveOptions(options);
-      break;
-    case "lineLength_narrow":
-      options.lineLength = "narrow";
-      await saveOptions(options);
-      break;
-    case "lineLength_wide":
-      options.lineLength = "wide";
-      await saveOptions(options);
-      break;
-    case "download_page":
-      messaging.send("download");
-      break;
+    switch (menuId) {
+      case "spellCheck":
+        options.spellCheck = info.checked;
+        break;
+      case "sort_title":
+        options.sort = "title";
+        break;
+      case "sort_modified":
+        options.sort = "modified";
+        break;
+      case "sort_created":
+        options.sort = "created";
+        break;
+      case "lineLength_narrow":
+        options.lineLength = "narrow";
+        break;
+      case "lineLength_wide":
+        options.lineLength = "wide";
+        break;
+    }
+
+    await storage.save("options", options);
+  } else {
+    switch (menuId) {
+      case "download_page":
+        messaging.send("download");
+        break;
+    }
   }
-}
-
-async function saveOptions(options) {
-  await storage.save("options", options);
 }
 
 async function updateCheckboxControls() {
