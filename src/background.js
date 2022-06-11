@@ -107,22 +107,22 @@ async function onMenuClick(info) {
     console.log("option");
 
     switch (menuId) {
-      case "spellCheck":
+      case "options__spellCheck":
         options.spellCheck = info.checked;
         break;
-      case "sort_title":
+      case "options__sort_title":
         options.sort = "title";
         break;
-      case "sort_modified":
+      case "options__sort_modified":
         options.sort = "modified";
         break;
-      case "sort_created":
+      case "options__sort_created":
         options.sort = "created";
         break;
-      case "lineLength_narrow":
+      case "options__lineLength_narrow":
         options.lineLength = "narrow";
         break;
-      case "lineLength_wide":
+      case "options__lineLength_wide":
         options.lineLength = "wide";
         break;
     }
