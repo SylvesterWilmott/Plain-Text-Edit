@@ -5,34 +5,43 @@ import * as regex from "./regex.js";
 import * as downloads from "./downloads.js";
 
 let editor;
-let actions;
 let docId; // The current ID of the loaded doc
 
 document.addEventListener("DOMContentLoaded", init);
 window.addEventListener("load", removeOverlay);
 
 async function init() {
-  editor = document.getElementById("editor");
-  actions = document.getElementById("actions");
-  docId = getDocId();
+  initRefs();
+  await initOptions();
+  await initDisplay();
+  initListeners();
+  updateFavicon();
 
+  editor.focus();
+}
+
+function initRefs() {
+  editor = document.getElementById("editor");
+  docId = getDocId();
+}
+
+async function initOptions() {
   let options = await getOptions();
-  let data = await getData();
 
   if (options) {
     updateSpellCheck(options.spellCheck);
     addClass(editor, options.lineLength);
   }
+}
+
+async function initDisplay() {
+  let data = await getData();
 
   if (data.id) {
     updateDisplay(data);
   } else {
     updateWindowTitle();
   }
-
-  addListeners();
-  updateFavicon();
-  editor.focus();
 }
 
 function getDocId() {
@@ -203,14 +212,14 @@ async function downloadFile() {
   }
 }
 
-function addListeners() {
+function initListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
+    chrome.runtime.onMessage.addListener(onContextMenuClicked);
     chrome.storage.onChanged.addListener(onStorageChanged);
   }
 
   editor.addEventListener("keydown", onEditorKeydown, false);
-  actions.addEventListener("click", onActionClicked, false);
   document.addEventListener("keydown", onDocumentKeydown, false);
 }
 
@@ -273,12 +282,6 @@ function onEditorKeydown(e) {
   }
 }
 
-function onActionClicked(e) {
-  if (e.target.classList.contains("download")) {
-    downloadFile();
-  }
-}
-
 async function onStorageChanged(changes, namespace) {
   if (changes[docId] && !document.hasFocus()) {
     let data = await getData();
@@ -304,6 +307,17 @@ function onDocumentKeydown(e) {
     e.preventDefault();
     downloadFile();
   }
+}
+
+function onContextMenuClicked(message, sender, sendResponse) {
+  if (document.hasFocus()) {
+    switch (message.msg) {
+      case "download":
+        downloadFile();
+        break;
+    }
+  }
+  sendResponse();
 }
 
 function debounce(callback, wait) {

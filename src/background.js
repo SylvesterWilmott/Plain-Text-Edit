@@ -1,6 +1,7 @@
 "use strict";
 
 import * as storage from "./js/storage.js";
+import * as messaging from "./js/messaging.js";
 
 let menu = [
   {
@@ -61,6 +62,12 @@ let menu = [
     contexts: ["action"],
     type: "checkbox",
   },
+  {
+    id: "download_page",
+    title: chrome.i18n.getMessage("menu_download"),
+    contexts: ["editable"],
+    documentUrlPatterns: ["chrome-extension://*/*/*.html?context=true*"],
+  },
 ];
 
 chrome.runtime.onInstalled.addListener(init);
@@ -98,24 +105,35 @@ async function onMenuClick(info) {
   switch (menuId) {
     case "spellCheck":
       options.spellCheck = info.checked;
+      await saveOptions();
       break;
     case "sort_title":
       options.sort = "title";
+      await saveOptions();
       break;
     case "sort_modified":
       options.sort = "modified";
+      await saveOptions();
       break;
     case "sort_created":
       options.sort = "created";
+      await saveOptions();
       break;
     case "lineLength_narrow":
       options.lineLength = "narrow";
+      await saveOptions();
       break;
     case "lineLength_wide":
       options.lineLength = "wide";
+      await saveOptions();
+      break;
+    case "download_page":
+      messaging.send("download");
       break;
   }
+}
 
+async function saveOptions() {
   await storage.save("options", options);
 }
 
