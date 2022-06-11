@@ -31,7 +31,7 @@ body.loading {
   outline: none;
   min-height: 100%;
   width: 100%;
-  tab-size: 2;
+  tab-size: 4;
   padding: 64px calc((100% - 870px) / 2);
   overflow: auto;
   overscroll-behavior: none;
