@@ -215,12 +215,12 @@ async function downloadFile() {
 function initListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
-    chrome.runtime.onMessage.addListener(onContextMenuClicked);
     chrome.storage.onChanged.addListener(onStorageChanged);
   }
 
   editor.addEventListener("keydown", onEditorKeydown, false);
   document.addEventListener("keydown", onDocumentKeydown, false);
+  chrome.runtime.onMessage.addListener(onContextMenuClicked);
 }
 
 // Event handlers
