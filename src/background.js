@@ -1,6 +1,7 @@
 "use strict";
 
 import * as storage from "./js/storage.js";
+import * as messaging from "./js/messaging.js";
 
 let menu = [
   {
@@ -10,21 +11,21 @@ let menu = [
     type: "normal",
   },
   {
-    id: "sort_title",
+    id: "options__sort_title",
     title: chrome.i18n.getMessage("menu_sort_title"),
     contexts: ["action"],
     parentId: "sort",
     type: "radio",
   },
   {
-    id: "sort_modified",
+    id: "options__sort_modified",
     title: chrome.i18n.getMessage("menu_sort_modified"),
     contexts: ["action"],
     parentId: "sort",
     type: "radio",
   },
   {
-    id: "sort_created",
+    id: "options__sort_created",
     title: chrome.i18n.getMessage("menu_sort_created"),
     contexts: ["action"],
     parentId: "sort",
@@ -42,24 +43,30 @@ let menu = [
     type: "normal",
   },
   {
-    id: "lineLength_narrow",
+    id: "options__lineLength_narrow",
     title: chrome.i18n.getMessage("menu_lineLength_narrow"),
     contexts: ["action"],
     parentId: "lineLength",
     type: "radio",
   },
   {
-    id: "lineLength_wide",
+    id: "options__lineLength_wide",
     title: chrome.i18n.getMessage("menu_lineLength_wide"),
     contexts: ["action"],
     parentId: "lineLength",
     type: "radio",
   },
   {
-    id: "spellCheck",
+    id: "options__spellCheck",
     title: chrome.i18n.getMessage("menu_spellCheck"),
     contexts: ["action"],
     type: "checkbox",
+  },
+  {
+    id: "download_page",
+    title: chrome.i18n.getMessage("menu_download"),
+    contexts: ["editable"],
+    documentUrlPatterns: ["chrome-extension://*/*/*.html?context=true*"],
   },
 ];
 
@@ -88,35 +95,46 @@ function createMenuItem(item) {
 
 async function onMenuClick(info) {
   const menuId = info.menuItemId;
+  const optionRegex = /^options__/gm;
 
-  let options = await storage.load("options", {
-    spellCheck: true,
-    sort: "modified",
-    lineLength: "narrow",
-  });
+  if (menuId.match(optionRegex)) {
+    let options = await storage.load("options", {
+      spellCheck: true,
+      sort: "modified",
+      lineLength: "narrow",
+    });
 
-  switch (menuId) {
-    case "spellCheck":
-      options.spellCheck = info.checked;
-      break;
-    case "sort_title":
-      options.sort = "title";
-      break;
-    case "sort_modified":
-      options.sort = "modified";
-      break;
-    case "sort_created":
-      options.sort = "created";
-      break;
-    case "lineLength_narrow":
-      options.lineLength = "narrow";
-      break;
-    case "lineLength_wide":
-      options.lineLength = "wide";
-      break;
+    console.log("option");
+
+    switch (menuId) {
+      case "spellCheck":
+        options.spellCheck = info.checked;
+        break;
+      case "sort_title":
+        options.sort = "title";
+        break;
+      case "sort_modified":
+        options.sort = "modified";
+        break;
+      case "sort_created":
+        options.sort = "created";
+        break;
+      case "lineLength_narrow":
+        options.lineLength = "narrow";
+        break;
+      case "lineLength_wide":
+        options.lineLength = "wide";
+        break;
+    }
+
+    await storage.save("options", options);
+  } else {
+    switch (menuId) {
+      case "download_page":
+        messaging.send("download");
+        break;
+    }
   }
-
-  await storage.save("options", options);
 }
 
 async function updateCheckboxControls() {
@@ -124,7 +142,7 @@ async function updateCheckboxControls() {
     spellCheck: true,
   });
 
-  await restoreCheckmark("spellCheck", options.spellCheck);
+  await restoreCheckmark("options__spellCheck", options.spellCheck);
 }
 
 async function updateRadioControls() {
@@ -135,22 +153,22 @@ async function updateRadioControls() {
 
   switch (options.sort) {
     case "title":
-      await restoreCheckmark("sort_title", true);
+      await restoreCheckmark("options__sort_title", true);
       break;
     case "modified":
-      await restoreCheckmark("sort_modified", true);
+      await restoreCheckmark("options__sort_modified", true);
       break;
     case "created":
-      await restoreCheckmark("sort_created", true);
+      await restoreCheckmark("options__sort_created", true);
       break;
   }
 
   switch (options.lineLength) {
     case "narrow":
-      await restoreCheckmark("lineLength_narrow", true);
+      await restoreCheckmark("options__lineLength_narrow", true);
       break;
     case "wide":
-      await restoreCheckmark("lineLength_wide", true);
+      await restoreCheckmark("options__lineLength_wide", true);
       break;
   }
 }

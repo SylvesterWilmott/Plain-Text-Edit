@@ -34,5 +34,8 @@
   },
   "menu_sort_created": {
     "message": "Date Created"
+  },
+  "menu_download": {
+    "message": "Save Document As..."
   }
 }

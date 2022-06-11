@@ -136,7 +136,7 @@ function getSortedList(arr) {
 }
 
 function newWindow(id) {
-  window.open("../html/index.html?id=" + id, "_blank");
+  window.open("../html/index.html?context=true&id=" + id, "_blank");
 }
 
 function initNavigation() {
