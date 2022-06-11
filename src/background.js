@@ -105,27 +105,27 @@ async function onMenuClick(info) {
   switch (menuId) {
     case "spellCheck":
       options.spellCheck = info.checked;
-      await saveOptions();
+      await saveOptions(options);
       break;
     case "sort_title":
       options.sort = "title";
-      await saveOptions();
+      await saveOptions(options);
       break;
     case "sort_modified":
       options.sort = "modified";
-      await saveOptions();
+      await saveOptions(options);
       break;
     case "sort_created":
       options.sort = "created";
-      await saveOptions();
+      await saveOptions(options);
       break;
     case "lineLength_narrow":
       options.lineLength = "narrow";
-      await saveOptions();
+      await saveOptions(options);
       break;
     case "lineLength_wide":
       options.lineLength = "wide";
-      await saveOptions();
+      await saveOptions(options);
       break;
     case "download_page":
       messaging.send("download");
@@ -133,7 +133,7 @@ async function onMenuClick(info) {
   }
 }
 
-async function saveOptions() {
+async function saveOptions(options) {
   await storage.save("options", options);
 }
 
