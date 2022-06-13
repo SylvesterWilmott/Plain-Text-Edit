@@ -5,6 +5,7 @@ import * as regex from "./regex.js";
 import * as downloads from "./downloads.js";
 
 let editor;
+let autoClosure = false;
 let docId; // The current ID of the loaded doc
 
 document.addEventListener("DOMContentLoaded", init);
@@ -29,8 +30,7 @@ async function initOptions() {
   let options = await getOptions();
 
   if (options) {
-    updateSpellCheck(options.spellCheck);
-    addClass(editor, options.lineLength);
+    applyOptions(options);
   }
 }
 
@@ -79,6 +79,7 @@ async function getOptions() {
   const options = await storage.load("options", {
     spellCheck: true,
     lineLength: "narrow",
+    autoClosure: false,
   });
 
   return options;
@@ -94,6 +95,12 @@ function updateDisplay(data) {
   updateEditorValue(data.text);
   updateWindowTitle(data.title);
   updateCaretPosition(data.caret);
+}
+
+function applyOptions(options) {
+  updateSpellCheck(options.spellCheck);
+  addClass(editor, options.lineLength);
+  autoClosure = options.autoClosure;
 }
 
 function updateEditorValue(value) {
@@ -231,54 +238,126 @@ async function onEditorInput() {
 }
 
 function onEditorKeydown(e) {
-  if (e.key === "Tab") {
-    e.preventDefault();
-    insertNode("\t");
-  } else if (e.key === "Enter") {
-    const line = getCurrentLine();
+  let key = e.key;
 
-    let match;
-    let type;
-
-    if (line) {
-      if (line.match(regex.clRegex)) {
-        match = [...line.matchAll(regex.clRegex)][0];
-        type = "cl";
-      } else if (line.match(regex.ulRegex)) {
-        match = [...line.matchAll(regex.ulRegex)][0];
-        type = "ul";
-      } else if (line.match(regex.olRegex)) {
-        match = [...line.matchAll(regex.olRegex)][0];
-        type = "ol";
-      }
-    }
-
-    if (!match) {
-      return;
-    } else {
+  switch (key) {
+    case "Tab":
       e.preventDefault();
-    }
-
-    let prefix = match[1];
-    let c = match[2];
-    let content = match[3];
-
-    if (type && type === "cl") {
-      c = c.replace(/x/, " ");
-    }
-
-    if (content) {
-      if (type === "ol") {
-        insertNode(
-          "\n",
-          c.replace(/[0-9]+/, (parseInt(c) + 1).toString()) + "." + " "
-        );
-      } else {
-        insertNode("\n", c + " ");
+      insertNode("\t");
+      break;
+    case "Enter":
+      autoList(e);
+      break;
+    case "(":
+    case "{":
+    case "[":
+    case "'":
+    case '"':
+    case "`":
+    case ")":
+    case "}":
+    case "]":
+      if (autoClosure) {
+        e.preventDefault();
+        autoClose(key);
       }
-    } else {
-      deleteNode(prefix.length);
+      break;
+  }
+}
+
+function autoList(e) {
+  const line = getCurrentLine();
+
+  let match;
+  let type;
+
+  if (line) {
+    if (line.match(regex.clRegex)) {
+      match = [...line.matchAll(regex.clRegex)][0];
+      type = "cl";
+    } else if (line.match(regex.ulRegex)) {
+      match = [...line.matchAll(regex.ulRegex)][0];
+      type = "ul";
+    } else if (line.match(regex.olRegex)) {
+      match = [...line.matchAll(regex.olRegex)][0];
+      type = "ol";
     }
+  }
+
+  if (!match) {
+    return;
+  } else {
+    e.preventDefault();
+  }
+
+  let prefix = match[1];
+  let c = match[2];
+  let content = match[3];
+
+  if (type && type === "cl") {
+    c = c.replace(/x/, " ");
+  }
+
+  if (content) {
+    if (type === "ol") {
+      insertNode(
+        "\n",
+        c.replace(/[0-9]+/, (parseInt(c) + 1).toString()) + "." + " "
+      );
+    } else {
+      insertNode("\n", c + " ");
+    }
+  } else {
+    deleteNode(prefix.length);
+  }
+}
+
+function autoClose(key) {
+  let pairs = [
+    { open: "(", close: ")" },
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "[", close: "]" },
+    { open: "«", close: "»" },
+    { open: "‹", close: "›" },
+    { open: "'", close: "'" },
+    { open: "`", close: "`" },
+    { open: '"', close: '"' },
+  ];
+
+  const findOpening = pairs.find((x) => x.open === key);
+  const findClosure = pairs.find((x) => x.close === key);
+  const selection = window.getSelection().toString();
+  const nextChar = editor.value.charAt(editor.selectionEnd);
+
+  if (findOpening) {
+    if (selection) {
+      insertNode(findOpening.open, selection, findOpening.close);
+      moveCaretBackward(1);
+    } else if (findClosure && nextChar === findOpening.close) {
+      console.log(findOpening.close);
+      moveCaretForward(1);
+    } else {
+      insertNode(findOpening.open, findOpening.close);
+      moveCaretBackward(1);
+    }
+  } else if (findClosure) {
+    const line = getCurrentLine();
+    const regex = new RegExp("\\" + findClosure.open, "g");
+
+    if (line.match(regex) && nextChar === findClosure.close) {
+      moveCaretForward(1);
+    } else {
+      insertNode(findClosure.close);
+    }
+  }
+
+  function moveCaretForward(n) {
+    editor.selectionStart = editor.selectionEnd + n;
+  }
+
+  function moveCaretBackward(n) {
+    editor.selectionEnd = editor.selectionEnd - n;
   }
 }
 
@@ -297,8 +376,7 @@ async function onStorageChanged(changes, namespace) {
 
     if (options) {
       resetEditorCss();
-      updateSpellCheck(options.spellCheck);
-      addClass(editor, options.lineLength);
+      applyOptions(options);
     }
   }
 }
