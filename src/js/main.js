@@ -269,7 +269,7 @@ function handleAutoList(e) {
   }
 }
 
-function handleAutoClosure(key) {
+function handleAutoClosure(e) {
   let pairs = [
     { open: "(", close: ")" },
     { open: "{", close: "}" },
@@ -282,38 +282,38 @@ function handleAutoClosure(key) {
     { open: '"', close: '"' },
   ];
 
-  const findOpening = pairs.find((x) => x.open === key);
-  const findClosure = pairs.find((x) => x.close === key);
+  const foundOpen = pairs.find((x) => x.open === e.key);
+  const foundClose = pairs.find((x) => x.close === e.key);
   const selection = window.getSelection().toString();
   const nextChar = editor.value.charAt(editor.selectionEnd);
 
-  if (findOpening) {
+  if (foundOpen) {
+    e.preventDefault();
     if (selection) {
-      insertNode(findOpening.open, selection, findOpening.close);
-      moveCaretBackward(1);
-    } else if (findClosure && nextChar === findOpening.close) {
-      moveCaretForward(1);
+      insertNode(foundOpen.open, selection, foundOpen.close);
+      moveCaret(-1);
+    } else if (foundClose && nextChar === foundOpen.close) {
+      moveCaret(1);
     } else {
-      insertNode(findOpening.open, findOpening.close);
-      moveCaretBackward(1);
+      insertNode(foundOpen.open, foundOpen.close);
+      moveCaret(-1);
     }
-  } else if (findClosure) {
+  } else if (foundClose) {
     const line = getCurrentLine();
-    const regex = new RegExp("\\" + findClosure.open, "g");
+    const regex = new RegExp("\\" + foundClose.open, "g");
 
-    if (line.match(regex) && nextChar === findClosure.close) {
-      moveCaretForward(1);
-    } else {
-      insertNode(findClosure.close);
+    if (line.match(regex) && nextChar === foundClose.close) {
+      e.preventDefault();
+      moveCaret(1);
     }
   }
+}
 
-  function moveCaretForward(n) {
+function moveCaret(n) {
+  if (n < 0) {
+    editor.selectionEnd = editor.selectionEnd + n;
+  } else {
     editor.selectionStart = editor.selectionEnd + n;
-  }
-
-  function moveCaretBackward(n) {
-    editor.selectionEnd = editor.selectionEnd - n;
   }
 }
 
@@ -358,8 +358,7 @@ function onEditorKeydown(e) {
     case "}":
     case "]":
       if (autoClosure) {
-        e.preventDefault();
-        handleAutoClosure(key);
+        handleAutoClosure(e);
       }
       break;
   }
