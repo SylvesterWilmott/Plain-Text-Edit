@@ -183,7 +183,7 @@ const saveData = debounce(async function (e) {
   let date = new Date().toString();
   let caretPos = editor.selectionEnd;
 
-  if (docData.length) {
+  if (Object.keys(docData).length > 0) {
     docData.modified = date;
     docData.text = text;
     docData.caret = caretPos;
