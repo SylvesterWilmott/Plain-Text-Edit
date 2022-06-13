@@ -63,6 +63,12 @@ let menu = [
     type: "checkbox",
   },
   {
+    id: "options__autoList",
+    title: chrome.i18n.getMessage("menu_list"),
+    contexts: ["action"],
+    type: "checkbox",
+  },
+  {
     id: "options__autoClosure",
     title: chrome.i18n.getMessage("menu_autoClosure"),
     contexts: ["action"],
@@ -106,6 +112,7 @@ async function onMenuClick(info) {
   if (menuId.match(optionRegex)) {
     let options = await storage.load("options", {
       spellCheck: true,
+      autoList: false,
       autoClosure: false,
       sort: "modified",
       lineLength: "narrow",
@@ -133,6 +140,9 @@ async function onMenuClick(info) {
       case "options__autoClosure":
         options.autoClosure = info.checked;
         break;
+      case "options__autoList":
+        options.autoList = info.checked;
+        break;
     }
 
     await storage.save("options", options);
@@ -148,10 +158,12 @@ async function onMenuClick(info) {
 async function updateCheckboxControls() {
   const options = await storage.load("options", {
     spellCheck: true,
+    autoList: true,
     autoClosure: false,
   });
 
   await restoreCheckmark("options__spellCheck", options.spellCheck);
+  await restoreCheckmark("options__autoList", options.autoList);
   await restoreCheckmark("options__autoClosure", options.autoClosure);
 }
 

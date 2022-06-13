@@ -5,6 +5,7 @@ import * as regex from "./regex.js";
 import * as downloads from "./downloads.js";
 
 let editor;
+let autoList = true;
 let autoClosure = false;
 let docId; // The current ID of the loaded doc
 
@@ -78,8 +79,9 @@ function setFavicon(path) {
 async function getOptions() {
   const options = await storage.load("options", {
     spellCheck: true,
-    lineLength: "narrow",
+    autoList: true,
     autoClosure: false,
+    lineLength: "narrow",
   });
 
   return options;
@@ -100,6 +102,7 @@ function updateDisplay(data) {
 function applyOptions(options) {
   updateSpellCheck(options.spellCheck);
   addClass(editor, options.lineLength);
+  autoList = options.autoList;
   autoClosure = options.autoClosure;
 }
 
@@ -219,53 +222,7 @@ async function downloadFile() {
   }
 }
 
-function initListeners() {
-  if (docId) {
-    editor.addEventListener("input", onEditorInput, false);
-    chrome.storage.onChanged.addListener(onStorageChanged);
-  }
-
-  editor.addEventListener("keydown", onEditorKeydown, false);
-  document.addEventListener("keydown", onDocumentKeydown, false);
-  chrome.runtime.onMessage.addListener(onContextMenuClicked);
-}
-
-// Event handlers
-
-async function onEditorInput() {
-  await saveData();
-  updateFavicon();
-}
-
-function onEditorKeydown(e) {
-  let key = e.key;
-
-  switch (key) {
-    case "Tab":
-      e.preventDefault();
-      insertNode("\t");
-      break;
-    case "Enter":
-      autoList(e);
-      break;
-    case "(":
-    case "{":
-    case "[":
-    case "'":
-    case '"':
-    case "`":
-    case ")":
-    case "}":
-    case "]":
-      if (autoClosure) {
-        e.preventDefault();
-        autoClose(key);
-      }
-      break;
-  }
-}
-
-function autoList(e) {
+function handleAutoList(e) {
   const line = getCurrentLine();
 
   let match;
@@ -312,7 +269,7 @@ function autoList(e) {
   }
 }
 
-function autoClose(key) {
+function handleAutoClosure(key) {
   let pairs = [
     { open: "(", close: ")" },
     { open: "{", close: "}" },
@@ -335,7 +292,6 @@ function autoClose(key) {
       insertNode(findOpening.open, selection, findOpening.close);
       moveCaretBackward(1);
     } else if (findClosure && nextChar === findOpening.close) {
-      console.log(findOpening.close);
       moveCaretForward(1);
     } else {
       insertNode(findOpening.open, findOpening.close);
@@ -358,6 +314,54 @@ function autoClose(key) {
 
   function moveCaretBackward(n) {
     editor.selectionEnd = editor.selectionEnd - n;
+  }
+}
+
+function initListeners() {
+  if (docId) {
+    editor.addEventListener("input", onEditorInput, false);
+    chrome.storage.onChanged.addListener(onStorageChanged);
+  }
+
+  editor.addEventListener("keydown", onEditorKeydown, false);
+  document.addEventListener("keydown", onDocumentKeydown, false);
+  chrome.runtime.onMessage.addListener(onContextMenuClicked);
+}
+
+// Event handlers
+
+async function onEditorInput() {
+  await saveData();
+  updateFavicon();
+}
+
+function onEditorKeydown(e) {
+  let key = e.key;
+
+  switch (key) {
+    case "Tab":
+      e.preventDefault();
+      insertNode("\t");
+      break;
+    case "Enter":
+      if (autoList) {
+        handleAutoList(e);
+      }
+      break;
+    case "(":
+    case "{":
+    case "[":
+    case "'":
+    case '"':
+    case "`":
+    case ")":
+    case "}":
+    case "]":
+      if (autoClosure) {
+        e.preventDefault();
+        handleAutoClosure(key);
+      }
+      break;
   }
 }
 
