@@ -63,6 +63,12 @@ let menu = [
     type: "checkbox",
   },
   {
+    id: "options__autoClosure",
+    title: chrome.i18n.getMessage("menu_autoClosure"),
+    contexts: ["action"],
+    type: "checkbox",
+  },
+  {
     id: "download_page",
     title: chrome.i18n.getMessage("menu_download"),
     contexts: ["editable"],
@@ -100,11 +106,10 @@ async function onMenuClick(info) {
   if (menuId.match(optionRegex)) {
     let options = await storage.load("options", {
       spellCheck: true,
+      autoClosure: false,
       sort: "modified",
       lineLength: "narrow",
     });
-
-    console.log("option");
 
     switch (menuId) {
       case "options__spellCheck":
@@ -125,6 +130,9 @@ async function onMenuClick(info) {
       case "options__lineLength_wide":
         options.lineLength = "wide";
         break;
+      case "options__autoClosure":
+        options.autoClosure = info.checked;
+        break;
     }
 
     await storage.save("options", options);
@@ -140,9 +148,11 @@ async function onMenuClick(info) {
 async function updateCheckboxControls() {
   const options = await storage.load("options", {
     spellCheck: true,
+    autoClosure: false,
   });
 
   await restoreCheckmark("options__spellCheck", options.spellCheck);
+  await restoreCheckmark("options__autoClosure", options.autoClosure);
 }
 
 async function updateRadioControls() {
