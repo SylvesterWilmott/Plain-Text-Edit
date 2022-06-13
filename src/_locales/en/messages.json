@@ -17,6 +17,9 @@
   "menu_autoClosure": {
     "message": "Autocomplete Brackets and Quotes"
   },
+  "menu_list": {
+    "message": "Autocomplete Lists"
+  },
   "menu_lineLength": {
     "message": "Line Length"
   },
