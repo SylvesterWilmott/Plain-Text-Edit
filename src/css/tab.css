@@ -84,6 +84,10 @@ body.loading {
   fill: var(--secondary);
 }
 
+.print-helper {
+  display: none;
+}
+
 @media only screen and (max-width: 950px) {
   .editor,
   .editor.narrow {
@@ -95,5 +99,38 @@ body.loading {
   .editor,
   .editor.narrow {
     padding: 24px;
+  }
+}
+
+@media print {
+  html,
+  body {
+    height: auto;
+    overflow: visible;
+  }
+
+  .print-helper {
+    display: block;
+  }
+
+  .printing {
+    display: none;
+  }
+
+  .print-helper,
+  .editor {
+    font-family: var(--font-mono);
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 10pt !important;
+    line-height: 1.5 !important;
+    max-width: 100%;
+    white-space: pre-wrap;
+  }
+
+  @page {
+    height: auto;
+    margin: 20px;
   }
 }
