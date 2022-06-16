@@ -325,6 +325,7 @@ function initListeners() {
 
   editor.addEventListener("keydown", onEditorKeydown, false);
   document.addEventListener("keydown", onDocumentKeydown, false);
+  window.addEventListener("beforeprint", onBeforePrint, false);
   chrome.runtime.onMessage.addListener(onContextMenuClicked);
 }
 
@@ -400,6 +401,27 @@ function onContextMenuClicked(message, sender, sendResponse) {
     }
   }
   sendResponse();
+}
+
+function onBeforePrint() {
+  let sel = document.getSelection().toString().trim();
+
+  if (sel.length === 0) {
+    editor.classList.add("printing");
+
+    let div = document.createElement("div");
+    div.classList.add("print-helper");
+    div.innerText = editor.value;
+    document.body.appendChild(div);
+
+    window.addEventListener("afterprint", onAfterPrint, false);
+
+    function onAfterPrint() {
+      editor.classList.remove("printing");
+      div.remove();
+      window.removeEventListener("afterprint", onAfterPrint, false);
+    }
+  }
 }
 
 function debounce(callback, wait) {
