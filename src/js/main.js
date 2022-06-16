@@ -209,8 +209,8 @@ const saveData = debounce(async function (e) {
 async function downloadFile() {
   const text = editor.value;
 
-  let filename = text.trim().split("\n")[0].substring(0, 75).trimEnd();
-  if (/\s/.test(filename)) {
+  let filename = text.trim().split("\n")[0].substring(0, 50).trimEnd();
+  if (/\s/.test(filename) && filename.length === 50) {
     const lastSpace = filename.lastIndexOf(" ");
     filename = filename.substring(0, lastSpace).trimEnd();
   }
