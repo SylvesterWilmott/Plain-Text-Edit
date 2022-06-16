@@ -3,6 +3,8 @@
 import * as storage from "./js/storage.js";
 import * as messaging from "./js/messaging.js";
 
+const tabUrl = chrome.runtime.getURL("html/index.html");
+
 let menu = [
   {
     id: "sort",
@@ -78,7 +80,7 @@ let menu = [
     id: "download_page",
     title: chrome.i18n.getMessage("menu_download"),
     contexts: ["editable"],
-    documentUrlPatterns: ["chrome-extension://*/*/*.html?context=true*"],
+    documentUrlPatterns: [tabUrl + "*"],
   },
 ];
 
