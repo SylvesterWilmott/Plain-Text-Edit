@@ -196,6 +196,7 @@ function navigateClick(key) {
       el.click();
       break;
     case "Backspace":
+    case "Delete":
       if (el.parentElement.id !== "actions") {
         el.querySelector(".remove").click();
       }
@@ -274,9 +275,8 @@ function documentOnKeydown(e) {
       navigateUp();
       break;
     case "Enter":
-      navigateClick(e.key);
-      break;
     case "Backspace":
+    case "Delete":
       navigateClick(e.key);
       break;
   }
