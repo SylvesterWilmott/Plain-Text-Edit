@@ -188,8 +188,19 @@ function navigateUp() {
   addSelection(newSelection);
 }
 
-function navigateClick(e) {
-  listNavItems[navIndex].click();
+function navigateClick(key) {
+  const el = listNavItems[navIndex];
+
+  switch (key) {
+    case "Enter":
+      el.click();
+      break;
+    case "Backspace":
+      if (el.parentElement.id !== "actions") {
+        el.querySelector(".remove").click();
+      }
+      break;
+  }
 }
 
 function removeSelection(el) {
@@ -208,30 +219,41 @@ function removeAllSelections() {
   navIndex = 0;
 }
 
-function documentOnMouseout(e) {
-  removeAllSelections();
-}
+async function deleteItem() {
+  const el = listNavItems[navIndex];
+  const uid = el.dataset.id;
 
-// Event handlers
-
-async function onListClick(e) {
-  const target = e.target;
-
-  if (target.classList.contains("remove")) {
-    const uid = target.parentElement.dataset.id;
+  if (
+    el.parentElement.id !== "actions" &&
+    confirm("Permanently delete this document?")
+  ) {
     await storage.clear(uid);
     let data = await getData();
     updateList(data);
     initNavigation();
+  }
+}
+
+// Event handlers
+
+function documentOnMouseout(e) {
+  removeAllSelections();
+}
+
+async function onListClick(e) {
+  const el = listNavItems[navIndex];
+
+  if (e.target.classList.contains("remove")) {
+    deleteItem();
   } else {
-    newWindow(target.dataset.id);
+    newWindow(el.dataset.id);
   }
 }
 
 function onActionsClick(e) {
-  const target = e.target;
+  const el = listNavItems[navIndex];
 
-  if (target.id === "new") {
+  if (el.id === "new") {
     let uid = createNewUid();
     newWindow(uid);
   }
@@ -252,7 +274,10 @@ function documentOnKeydown(e) {
       navigateUp();
       break;
     case "Enter":
-      navigateClick();
+      navigateClick(e.key);
+      break;
+    case "Backspace":
+      navigateClick(e.key);
       break;
   }
 }
