@@ -26,7 +26,7 @@ body.loading {
   color: var(--primary);
   font-family: var(--font-mono);
   font-size: 17px;
-  line-height: 32px;
+  line-height: 33px;
   border: none;
   outline: none;
   min-height: 100%;
@@ -39,7 +39,7 @@ body.loading {
 
 .editor.narrow {
   padding: 64px calc((100% - 870px) / 2);
-  line-height: 32px;
+  line-height: 33px;
 }
 
 .editor.wide {
