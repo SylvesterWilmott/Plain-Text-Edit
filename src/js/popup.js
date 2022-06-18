@@ -229,8 +229,7 @@ async function deleteItem() {
     confirm("Permanently delete this document?")
   ) {
     await storage.clear(uid);
-    let data = await getData();
-    updateList(data);
+    el.remove();
     initNavigation();
   }
 }
