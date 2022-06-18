@@ -20,10 +20,8 @@ async function init() {
   let data = await getData();
 
   updateList(data);
-
-  addListeners();
   initNavigation();
-
+  addListeners();
   i18n.localize();
 }
 
@@ -51,6 +49,8 @@ function getData() {
 function addListeners() {
   list.addEventListener("click", onListClick, false);
   actions.addEventListener("click", onActionsClick, false);
+  document.addEventListener("keydown", documentOnKeydown, false);
+  document.addEventListener("mouseout", documentOnMouseout, false);
 }
 
 async function getOptions() {
@@ -135,8 +135,8 @@ function getSortedList(arr) {
   return sorted;
 }
 
-function newWindow(id) {
-  window.open("../html/index.html?id=" + id, "_blank");
+function newWindow(uid) {
+  window.open("../html/index.html?id=" + uid, "_blank");
 }
 
 function initNavigation() {
@@ -153,45 +153,42 @@ function initNavigation() {
       false
     );
   }
-
-  document.addEventListener("keydown", documentOnKeydown, false);
-  document.addEventListener("mouseout", documentOnMouseout, false);
 }
 
-function navigateDown() {
-  const currentSelection = listNavItems[navIndex];
+function navigateDirection(e) {
+  e.preventDefault();
 
-  if (currentSelection.classList.contains("selected")) {
-    removeSelection(currentSelection);
-    navIndex !== listNavItems.length - 1 ? navIndex++ : navIndex;
-  } else {
-    navIndex = 0;
+  switch (e.key) {
+    case "ArrowDown":
+      if (listNavItems[navIndex].classList.contains("selected")) {
+        listNavItems[navIndex].classList.remove("selected");
+        navIndex !== listNavItems.length - 1
+          ? navIndex++
+          : listNavItems.length - 1;
+      } else {
+        navIndex = 0;
+      }
+      break;
+    case "ArrowUp":
+      if (listNavItems[navIndex].classList.contains("selected")) {
+        listNavItems[navIndex].classList.remove("selected");
+        navIndex !== 0 ? navIndex-- : 0;
+      } else {
+        navIndex = listNavItems.length - 1;
+      }
+      break;
   }
 
-  const newSelection = listNavItems[navIndex];
-
-  addSelection(newSelection);
+  listNavItems[navIndex].classList.add("selected");
+  listNavItems[navIndex].scrollIntoView({ block: "nearest" });
 }
 
-function navigateUp() {
-  const currentSelection = listNavItems[navIndex];
+function navigateClick(e) {
+  e.preventDefault();
 
-  if (currentSelection.classList.contains("selected")) {
-    removeSelection(currentSelection);
-    navIndex !== 0 ? navIndex-- : navIndex;
-  } else {
-    navIndex = listNavItems.length - 1;
-  }
-
-  const newSelection = listNavItems[navIndex];
-
-  addSelection(newSelection);
-}
-
-function navigateClick(key) {
   const el = listNavItems[navIndex];
 
-  switch (key) {
+  switch (e.key) {
     case "Enter":
       el.click();
       break;
@@ -204,14 +201,6 @@ function navigateClick(key) {
   }
 }
 
-function removeSelection(el) {
-  el.classList.remove("selected");
-}
-
-function addSelection(el) {
-  el.classList.add("selected");
-}
-
 function removeAllSelections() {
   for (const item of listNavItems) {
     item.classList.remove("selected");
@@ -220,16 +209,11 @@ function removeAllSelections() {
   navIndex = 0;
 }
 
-async function deleteItem() {
-  const el = listNavItems[navIndex];
-  const uid = el.dataset.id;
-
-  if (
-    el.parentElement.id !== "actions" &&
-    confirm("Permanently delete this document?")
-  ) {
+async function deleteItem(uid) {
+  if (confirm("Permanently delete this document?")) {
     await storage.clear(uid);
-    el.remove();
+    let data = await getData();
+    updateList(data);
     initNavigation();
   }
 }
@@ -242,11 +226,12 @@ function documentOnMouseout(e) {
 
 async function onListClick(e) {
   const el = listNavItems[navIndex];
+  const uid = el.dataset.id;
 
   if (e.target.classList.contains("remove")) {
-    deleteItem();
+    deleteItem(uid);
   } else {
-    newWindow(el.dataset.id);
+    newWindow(uid);
   }
 }
 
@@ -268,15 +253,13 @@ function itemOnMouseover(e) {
 function documentOnKeydown(e) {
   switch (e.key) {
     case "ArrowDown":
-      navigateDown();
-      break;
     case "ArrowUp":
-      navigateUp();
+      navigateDirection(e);
       break;
     case "Enter":
     case "Backspace":
     case "Delete":
-      navigateClick(e.key);
+      navigateClick(e);
       break;
   }
 }
