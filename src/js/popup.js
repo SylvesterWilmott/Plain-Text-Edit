@@ -180,6 +180,7 @@ function navigateDirection(e) {
   }
 
   listNavItems[navIndex].classList.add("selected");
+  listNavItems[navIndex].scrollIntoView({ block: "end" });
 }
 
 function navigateClick(e) {
