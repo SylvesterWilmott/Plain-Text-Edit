@@ -7,7 +7,6 @@ let list; // List of notes
 let actions; // List of permanent actions
 let listNavItems; // List of elements available for keyboard navigation
 let navIndex = 0; // Index of currently selected element
-
 let options = {};
 
 document.addEventListener("DOMContentLoaded", init);
@@ -30,7 +29,7 @@ function getData() {
     chrome.storage.local.get(null, async function (items) {
       let data = [];
 
-      for (const key in items) {
+      for (let key in items) {
         if (items[key].type === "doc") {
           // Remove documents with no text
           if (!items[key].text || items[key].text === "") {
@@ -54,11 +53,9 @@ function addListeners() {
 }
 
 async function getOptions() {
-  let options = await storage.load("options", {
+  return await storage.load("options", {
     sort: "modified",
   });
-
-  return options;
 }
 
 function createNewUid() {
@@ -75,7 +72,7 @@ async function updateList(arr) {
 
   list.innerHTML = "";
 
-  for (const item of sorted) {
+  for (let item of sorted) {
     let li = document.createElement("li");
     let icon = document.createElement("div");
     let button = document.createElement("span");
@@ -186,7 +183,7 @@ function navigateDirection(e) {
 function navigateClick(e) {
   e.preventDefault();
 
-  const el = listNavItems[navIndex];
+  let el = listNavItems[navIndex];
 
   switch (e.key) {
     case "Enter":
@@ -202,7 +199,7 @@ function navigateClick(e) {
 }
 
 function removeAllSelections() {
-  for (const item of listNavItems) {
+  for (let item of listNavItems) {
     item.classList.remove("selected");
   }
 
@@ -225,8 +222,8 @@ function documentOnMouseout(e) {
 }
 
 async function onListClick(e) {
-  const el = listNavItems[navIndex];
-  const uid = el.dataset.id;
+  let el = listNavItems[navIndex];
+  let uid = el.dataset.id;
 
   if (e.target.classList.contains("remove")) {
     deleteItem(uid);
@@ -236,7 +233,7 @@ async function onListClick(e) {
 }
 
 function onActionsClick(e) {
-  const el = listNavItems[navIndex];
+  let el = listNavItems[navIndex];
 
   if (el.id === "new") {
     let uid = createNewUid();

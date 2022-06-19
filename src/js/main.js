@@ -48,9 +48,9 @@ async function initDisplay() {
 }
 
 function getDocId() {
-  const url = window.location.search;
-  const params = new URLSearchParams(url);
-  const id = params.get("id");
+  let url = window.location.search;
+  let params = new URLSearchParams(url);
+  let id = params.get("id");
 
   if (id && id !== "undefined") {
     return id;
@@ -58,7 +58,7 @@ function getDocId() {
 }
 
 async function updateFavicon() {
-  const textLength = editor.value.length;
+  let textLength = editor.value.length;
 
   if (textLength === 0) {
     setFavicon("../images/ui/note_length_0.png");
@@ -78,20 +78,16 @@ function setFavicon(path) {
 }
 
 async function getOptions() {
-  const options = await storage.load("options", {
+  return await storage.load("options", {
     spellCheck: true,
     autoList: true,
     autoClosure: false,
     lineLength: "narrow",
   });
-
-  return options;
 }
 
 async function getData() {
-  const docData = await storage.load(docId, {});
-
-  return docData;
+  return await storage.load(docId, {});
 }
 
 function updateDisplay(data) {
@@ -129,15 +125,11 @@ function updateSpellCheck(bool) {
 }
 
 function getCurrentLine() {
-  let line = "";
-
-  line = editor.value.slice(
+  return editor.value.slice(
     editor.value.lastIndexOf("\n", editor.selectionStart - 1) + 1,
     ((end = editor.value.indexOf("\n", editor.selectionStart)) =>
       end > -1 ? end : undefined)()
   );
-
-  return line;
 }
 
 function removeOverlay() {
@@ -145,7 +137,7 @@ function removeOverlay() {
 }
 
 function insertNode(...nodes) {
-  for (const node of nodes) {
+  for (let node of nodes) {
     document.execCommand("insertText", false, node);
   }
 }
@@ -153,7 +145,7 @@ function insertNode(...nodes) {
 function deleteNode(times) {
   let repeated = 0;
 
-  const repeatDelete = setInterval(runDelete, 0);
+  let repeatDelete = setInterval(runDelete, 0);
 
   function runDelete() {
     if (repeated < times) {
@@ -167,7 +159,7 @@ function deleteNode(times) {
 }
 
 function addClass(element, ...classes) {
-  for (const c of classes) {
+  for (let c of classes) {
     element.classList.add(c);
   }
 }
@@ -176,8 +168,8 @@ function resetEditorCss() {
   editor.className = "editor";
 }
 
-const saveData = debounce(async function (e) {
-  const docData = await storage.load(docId, {});
+let saveData = debounce(async function (e) {
+  let docData = await storage.load(docId, {});
 
   let text = editor.value;
   let title = text.trim().split("\n")[0].substring(0, 75).trimEnd();
@@ -208,11 +200,11 @@ const saveData = debounce(async function (e) {
 }, 500);
 
 async function downloadFile() {
-  const text = editor.value;
+  let text = editor.value;
 
   let filename = text.trim().split("\n")[0].substring(0, 50).trimEnd();
   if (/\s/.test(filename) && filename.length === 50) {
-    const lastSpace = filename.lastIndexOf(" ");
+    let lastSpace = filename.lastIndexOf(" ");
     filename = filename.substring(0, lastSpace).trimEnd();
   }
 
@@ -224,20 +216,20 @@ async function downloadFile() {
 }
 
 function handleAutoList(e) {
-  const line = getCurrentLine();
+  let line = getCurrentLine();
 
   let match;
   let type;
 
   if (line) {
-    if (line.match(regex.clRegex)) {
-      match = [...line.matchAll(regex.clRegex)][0];
+    if (line.match(regex.CL_REGEX)) {
+      match = [...line.matchAll(regex.CL_REGEX)][0];
       type = "cl";
-    } else if (line.match(regex.ulRegex)) {
-      match = [...line.matchAll(regex.ulRegex)][0];
+    } else if (line.match(regex.UL_REGEX)) {
+      match = [...line.matchAll(regex.UL_REGEX)][0];
       type = "ul";
-    } else if (line.match(regex.olRegex)) {
-      match = [...line.matchAll(regex.olRegex)][0];
+    } else if (line.match(regex.OL_REGEX)) {
+      match = [...line.matchAll(regex.OL_REGEX)][0];
       type = "ol";
     }
   }
@@ -271,7 +263,7 @@ function handleAutoList(e) {
 }
 
 function handleAutoClosure(e) {
-  let pairs = [
+  const OPEN_CLOSE_PAIRS = [
     { open: "(", close: ")" },
     { open: "{", close: "}" },
     { open: "[", close: "]" },
@@ -283,10 +275,10 @@ function handleAutoClosure(e) {
     { open: '"', close: '"' },
   ];
 
-  const foundOpen = pairs.find((x) => x.open === e.key);
-  const foundClose = pairs.find((x) => x.close === e.key);
-  const selection = window.getSelection().toString();
-  const nextChar = editor.value.charAt(editor.selectionEnd);
+  let foundOpen = OPEN_CLOSE_PAIRS.find((x) => x.open === e.key);
+  let foundClose = OPEN_CLOSE_PAIRS.find((x) => x.close === e.key);
+  let selection = window.getSelection().toString();
+  let nextChar = editor.value.charAt(editor.selectionEnd);
 
   if (foundOpen) {
     e.preventDefault();
@@ -300,8 +292,8 @@ function handleAutoClosure(e) {
       moveCaret(-1);
     }
   } else if (foundClose) {
-    const line = getCurrentLine();
-    const regex = new RegExp("\\" + foundClose.open, "g");
+    let line = getCurrentLine();
+    let regex = new RegExp("\\" + foundClose.open, "g");
 
     if (line.match(regex) && nextChar === foundClose.close) {
       e.preventDefault();
