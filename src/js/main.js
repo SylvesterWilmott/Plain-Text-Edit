@@ -5,6 +5,7 @@ import * as regex from "./regex.js";
 import * as downloads from "./downloads.js";
 
 let editor;
+let favicon;
 let autoList = true;
 let autoClosure = false;
 let docId; // The current ID of the loaded doc
@@ -24,6 +25,7 @@ async function init() {
 
 function initRefs() {
   editor = document.getElementById("editor");
+  favicon = document.getElementById("favicon");
   docId = getDocId();
 }
 
@@ -72,7 +74,6 @@ async function updateFavicon() {
 }
 
 function setFavicon(path) {
-  let favicon = document.getElementById("favicon");
   favicon.setAttribute("href", path);
 }
 
