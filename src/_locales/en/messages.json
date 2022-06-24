@@ -11,24 +11,6 @@
   "new_document_title": {
     "message": "New Document"
   },
-  "menu_spellCheck": {
-    "message": "Check Spelling"
-  },
-  "menu_autoClosure": {
-    "message": "Autocomplete Brackets and Quotes"
-  },
-  "menu_list": {
-    "message": "Autocomplete Lists"
-  },
-  "menu_lineLength": {
-    "message": "Line Length"
-  },
-  "menu_lineLength_narrow": {
-    "message": "Narrow"
-  },
-  "menu_lineLength_wide": {
-    "message": "Wide"
-  },
   "menu_sortby": {
     "message": "Sort By"
   },
@@ -40,6 +22,27 @@
   },
   "menu_sort_created": {
     "message": "Date Created"
+  },
+  "menu_editor": {
+    "message": "Editor"
+  },
+  "menu_lineLength": {
+    "message": "Line Length"
+  },
+  "menu_lineLength_narrow": {
+    "message": "Narrow"
+  },
+  "menu_lineLength_wide": {
+    "message": "Wide"
+  },
+  "menu_spellCheck": {
+    "message": "Check Spelling"
+  },
+  "menu_autoClosure": {
+    "message": "Autocomplete Brackets and Quotes"
+  },
+  "menu_list": {
+    "message": "Autocomplete Lists"
   },
   "menu_download": {
     "message": "Save Document As..."
