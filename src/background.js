@@ -39,9 +39,16 @@ let menu = [
     type: "separator",
   },
   {
+    id: "editor",
+    title: chrome.i18n.getMessage("menu_editor"),
+    contexts: ["action"],
+    type: "normal",
+  },
+  {
     id: "lineLength",
     title: chrome.i18n.getMessage("menu_lineLength"),
     contexts: ["action"],
+    parentId: "editor",
     type: "normal",
   },
   {
@@ -62,18 +69,21 @@ let menu = [
     id: "options__spellCheck",
     title: chrome.i18n.getMessage("menu_spellCheck"),
     contexts: ["action"],
+    parentId: "editor",
     type: "checkbox",
   },
   {
     id: "options__autoList",
     title: chrome.i18n.getMessage("menu_list"),
     contexts: ["action"],
+    parentId: "editor",
     type: "checkbox",
   },
   {
     id: "options__autoClosure",
     title: chrome.i18n.getMessage("menu_autoClosure"),
     contexts: ["action"],
+    parentId: "editor",
     type: "checkbox",
   },
   {
@@ -81,6 +91,7 @@ let menu = [
     title: chrome.i18n.getMessage("menu_download"),
     contexts: ["editable"],
     documentUrlPatterns: [tabUrl + "*"],
+    type: "normal",
   },
 ];
 
