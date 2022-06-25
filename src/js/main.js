@@ -132,16 +132,6 @@ function getCurrentLine() {
   );
 }
 
-function getCurrentWord() {
-  let line = getCurrentLine();
-
-  return line.slice(
-    line.lastIndexOf(" ", editor.selectionEnd - 1) + 1,
-    ((end = line.indexOf(" ", editor.selectionEnd)) =>
-      end > -1 ? end : undefined)()
-  );
-}
-
 function removeOverlay() {
   document.body.classList.remove("loading"); // Remove overlay
 }
@@ -274,15 +264,15 @@ function handleAutoList(e) {
 
 function handleAutoClosure(e) {
   const OPEN_CLOSE_PAIRS = [
-    { open: "(", close: ")", type: "bracket" },
-    { open: "{", close: "}", type: "bracket" },
-    { open: "[", close: "]", type: "bracket" },
-    { open: "[", close: "]", type: "bracket" },
-    { open: "«", close: "»", type: "bracket" },
-    { open: "‹", close: "›", type: "bracket" },
-    { open: "'", close: "'", type: "quote" },
-    { open: "`", close: "`", type: "quote" },
-    { open: '"', close: '"', type: "quote" },
+    { open: "(", close: ")" },
+    { open: "{", close: "}" },
+    { open: "[", close: "]" },
+    { open: "[", close: "]" },
+    { open: "«", close: "»" },
+    { open: "‹", close: "›" },
+    { open: "'", close: "'" },
+    { open: "`", close: "`" },
+    { open: '"', close: '"' },
   ];
 
   let foundOpen = OPEN_CLOSE_PAIRS.find((x) => x.open === e.key);
@@ -291,20 +281,15 @@ function handleAutoClosure(e) {
   let nextChar = editor.value.charAt(editor.selectionEnd);
 
   if (foundOpen) {
-    let word = getCurrentWord();
-    if (word.length > 0 && foundOpen.type === "quote" && !selection) {
-      return;
+    e.preventDefault();
+    if (selection) {
+      insertNode(foundOpen.open, selection, foundOpen.close);
+      moveCaret(-1);
+    } else if (foundClose && nextChar === foundOpen.close) {
+      moveCaret(1);
     } else {
-      e.preventDefault();
-      if (selection) {
-        insertNode(foundOpen.open, selection, foundOpen.close);
-        moveCaret(-1);
-      } else if (foundClose && nextChar === foundOpen.close) {
-        moveCaret(1);
-      } else {
-        insertNode(foundOpen.open, foundOpen.close);
-        moveCaret(-1);
-      }
+      insertNode(foundOpen.open, foundOpen.close);
+      moveCaret(-1);
     }
   } else if (foundClose) {
     let line = getCurrentLine();
