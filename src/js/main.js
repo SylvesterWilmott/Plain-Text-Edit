@@ -292,7 +292,11 @@ function handleAutoClosure(e) {
 
   if (foundOpen) {
     let word = getCurrentWord();
-    if (word.length > 0 && foundOpen.type === "quote" && !selection) {
+    if (
+      word.match(regex.WORD_REGEX) &&
+      foundOpen.type === "quote" &&
+      !selection
+    ) {
       return;
     } else {
       e.preventDefault();
