@@ -293,6 +293,7 @@ function handleAutoClosure(e) {
   if (foundOpen) {
     let word = getCurrentWord();
     if (
+      word &&
       word.match(regex.WORD_REGEX) &&
       foundOpen.type === "quote" &&
       !selection
