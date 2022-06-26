@@ -421,8 +421,9 @@ function onEditorKeydown(e) {
 function onEditorClick() {
   if (selectURLs) {
     let word = getCurrentWord();
+    let selection = window.getSelection().toString();
 
-    if (isValidUrl(word)) {
+    if (!selection && isValidUrl(word)) {
       selectCurrentWord();
     }
   }
