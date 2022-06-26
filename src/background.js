@@ -87,6 +87,13 @@ let menu = [
     type: "checkbox",
   },
   {
+    id: "options__selectURLs",
+    title: chrome.i18n.getMessage("menu_selectURLs"),
+    contexts: ["action"],
+    parentId: "editor",
+    type: "checkbox",
+  },
+  {
     id: "download_page",
     title: chrome.i18n.getMessage("menu_download"),
     contexts: ["editable"],
@@ -127,6 +134,7 @@ async function onMenuClick(info) {
       spellCheck: true,
       autoList: false,
       autoClosure: false,
+      selectURLs: false,
       sort: "modified",
       lineLength: "narrow",
     });
@@ -156,6 +164,9 @@ async function onMenuClick(info) {
       case "options__autoList":
         options.autoList = info.checked;
         break;
+      case "options__selectURLs":
+        options.selectURLs = info.checked;
+        break;
     }
 
     await storage.save("options", options);
@@ -173,11 +184,13 @@ async function updateCheckboxControls() {
     spellCheck: true,
     autoList: true,
     autoClosure: false,
+    selectURLs: false,
   });
 
   await restoreCheckmark("options__spellCheck", options.spellCheck);
   await restoreCheckmark("options__autoList", options.autoList);
   await restoreCheckmark("options__autoClosure", options.autoClosure);
+  await restoreCheckmark("options__selectURLs", options.selectURLs);
 }
 
 async function updateRadioControls() {
