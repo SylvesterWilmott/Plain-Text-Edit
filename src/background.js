@@ -34,7 +34,7 @@ let menu = [
     type: "radio",
   },
   {
-    id: "separator",
+    id: "separator_1",
     contexts: ["action"],
     type: "separator",
   },
@@ -64,6 +64,12 @@ let menu = [
     contexts: ["action"],
     parentId: "lineLength",
     type: "radio",
+  },
+  {
+    id: "separator_2",
+    contexts: ["action"],
+    parentId: "editor",
+    type: "separator",
   },
   {
     id: "options__spellCheck",
