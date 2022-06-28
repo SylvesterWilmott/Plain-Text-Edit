@@ -185,12 +185,13 @@ function deleteNode(times) {
   let repeatDelete = setInterval(runDelete, 0);
 
   function runDelete() {
-    if (repeated < times) {
+    if (times > repeated) {
       repeated++;
       document.execCommand("delete");
       runDelete();
     } else {
-      clearInterval(runDelete);
+      console.log("Inteval cleared");
+      clearInterval(repeatDelete);
     }
   }
 }
