@@ -138,7 +138,7 @@ async function onMenuClick(info) {
   if (menuId.match(optionRegex)) {
     let options = await storage.load("options", {
       spellCheck: true,
-      autoList: false,
+      autoList: true,
       autoClosure: false,
       selectURLs: false,
       sort: "modified",
