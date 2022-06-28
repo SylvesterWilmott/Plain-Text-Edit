@@ -38,11 +38,14 @@
   "menu_spellCheck": {
     "message": "Check Spelling"
   },
+  "menu_list": {
+    "message": "Autocomplete Lists"
+  },
   "menu_autoClosure": {
     "message": "Autocomplete Brackets and Quotes"
   },
-  "menu_list": {
-    "message": "Autocomplete Lists"
+  "menu_selectURLs": {
+    "message": "Click to Select URLs"
   },
   "menu_download": {
     "message": "Save Document As..."

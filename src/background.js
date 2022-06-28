@@ -34,7 +34,7 @@ let menu = [
     type: "radio",
   },
   {
-    id: "separator",
+    id: "separator_1",
     contexts: ["action"],
     type: "separator",
   },
@@ -66,6 +66,12 @@ let menu = [
     type: "radio",
   },
   {
+    id: "separator_2",
+    contexts: ["action"],
+    parentId: "editor",
+    type: "separator",
+  },
+  {
     id: "options__spellCheck",
     title: chrome.i18n.getMessage("menu_spellCheck"),
     contexts: ["action"],
@@ -82,6 +88,13 @@ let menu = [
   {
     id: "options__autoClosure",
     title: chrome.i18n.getMessage("menu_autoClosure"),
+    contexts: ["action"],
+    parentId: "editor",
+    type: "checkbox",
+  },
+  {
+    id: "options__selectURLs",
+    title: chrome.i18n.getMessage("menu_selectURLs"),
     contexts: ["action"],
     parentId: "editor",
     type: "checkbox",
@@ -127,6 +140,7 @@ async function onMenuClick(info) {
       spellCheck: true,
       autoList: false,
       autoClosure: false,
+      selectURLs: false,
       sort: "modified",
       lineLength: "narrow",
     });
@@ -156,6 +170,9 @@ async function onMenuClick(info) {
       case "options__autoList":
         options.autoList = info.checked;
         break;
+      case "options__selectURLs":
+        options.selectURLs = info.checked;
+        break;
     }
 
     await storage.save("options", options);
@@ -173,11 +190,13 @@ async function updateCheckboxControls() {
     spellCheck: true,
     autoList: true,
     autoClosure: false,
+    selectURLs: false,
   });
 
   await restoreCheckmark("options__spellCheck", options.spellCheck);
   await restoreCheckmark("options__autoList", options.autoList);
   await restoreCheckmark("options__autoClosure", options.autoClosure);
+  await restoreCheckmark("options__selectURLs", options.selectURLs);
 }
 
 async function updateRadioControls() {
