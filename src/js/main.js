@@ -190,7 +190,6 @@ function deleteNode(times) {
       document.execCommand("delete");
       runDelete();
     } else {
-      console.log("Inteval cleared");
       clearInterval(repeatDelete);
     }
   }
