@@ -136,18 +136,9 @@ function getCurrentLine() {
 }
 
 function getCurrentWord() {
-  let line = getCurrentLine();
-
-  return line.slice(
-    line.lastIndexOf(" ", editor.selectionEnd - 1) + 1,
-    ((end = line.indexOf(" ", editor.selectionEnd)) =>
-      end > -1 ? end : undefined)()
-  );
-}
-
-function selectCurrentWord() {
-  let start = editor.selectionStart;
+  let start = editor.selectionStart - 1;
   let end = editor.selectionEnd;
+  let word;
 
   while (
     !editor.value.charAt(start).match(regex.WHITESPACE_REGEX) &&
@@ -163,9 +154,21 @@ function selectCurrentWord() {
     end++;
   }
 
+  word = editor.value.substring(start, end).trim();
+
+  return {
+    start: start,
+    end: end,
+    word: word,
+  };
+}
+
+function selectCurrentWord() {
+  let wordObj = getCurrentWord();
+
   if (editor.selectionEnd !== editor.value.length) {
-    editor.selectionStart = start + 1;
-    editor.selectionEnd = end;
+    editor.selectionStart = wordObj.start + 1;
+    editor.selectionEnd = wordObj.end;
   }
 }
 
@@ -318,7 +321,7 @@ function handleAutoClosure(e) {
   let nextChar = editor.value.charAt(editor.selectionEnd);
 
   if (foundOpen) {
-    let word = getCurrentWord();
+    let word = getCurrentWord().word;
     if (
       word &&
       word.match(regex.WORD_REGEX) &&
@@ -420,7 +423,7 @@ function onEditorKeydown(e) {
 
 function onEditorClick() {
   if (selectURLs) {
-    let word = getCurrentWord();
+    let word = getCurrentWord().word;
     let selection = window.getSelection().toString();
 
     if (!selection && isValidUrl(word)) {
