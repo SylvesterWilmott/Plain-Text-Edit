@@ -8,7 +8,6 @@ let editor;
 let favicon;
 let autoList = true;
 let autoClosure = false;
-let selectURLs = false;
 let docId; // The current ID of the loaded doc
 
 document.addEventListener("DOMContentLoaded", init);
@@ -83,7 +82,6 @@ async function getOptions() {
     spellCheck: true,
     autoList: true,
     autoClosure: false,
-    selectURLs: false,
     lineLength: "narrow",
   });
 }
@@ -103,7 +101,6 @@ function applyOptions(options) {
   addClass(editor, options.lineLength);
   autoList = options.autoList;
   autoClosure = options.autoClosure;
-  selectURLs = options.selectURLs;
 }
 
 function updateEditorValue(value) {
@@ -161,15 +158,6 @@ function getCurrentWord() {
     end: end,
     word: word,
   };
-}
-
-function selectCurrentWord() {
-  let wordObj = getCurrentWord();
-
-  if (editor.selectionEnd !== editor.value.length) {
-    editor.selectionStart = wordObj.start + 1;
-    editor.selectionEnd = wordObj.end;
-  }
 }
 
 function removeOverlay() {
@@ -379,7 +367,6 @@ function initListeners() {
   }
 
   editor.addEventListener("keydown", onEditorKeydown, false);
-  editor.addEventListener("click", onEditorClick, false);
   document.addEventListener("keydown", onDocumentKeydown, false);
   window.addEventListener("beforeprint", onBeforePrint, false);
   chrome.runtime.onMessage.addListener(onContextMenuClicked);
@@ -418,17 +405,6 @@ function onEditorKeydown(e) {
         handleAutoClosure(e);
       }
       break;
-  }
-}
-
-function onEditorClick() {
-  if (selectURLs) {
-    let word = getCurrentWord().word;
-    let selection = window.getSelection().toString();
-
-    if (!selection && isValidUrl(word)) {
-      selectCurrentWord();
-    }
   }
 }
 
