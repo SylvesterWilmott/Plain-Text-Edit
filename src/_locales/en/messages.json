@@ -44,9 +44,6 @@
   "menu_autoClosure": {
     "message": "Autocomplete Brackets and Quotes"
   },
-  "menu_selectURLs": {
-    "message": "Click to Select URLs"
-  },
   "menu_download": {
     "message": "Save Document As..."
   }
