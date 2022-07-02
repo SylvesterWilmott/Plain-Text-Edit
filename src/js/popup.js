@@ -76,10 +76,18 @@ async function updateList(arr) {
     let li = document.createElement("li");
     let icon = document.createElement("div");
     let button = document.createElement("span");
+    let content = document.createElement("div");
+    let title = document.createElement("div");
+    let time = document.createElement("div");
 
-    li.innerText = item.title;
     li.setAttribute("data-id", item.id);
     li.classList.add("item");
+
+    content.classList.add("content");
+
+    title.innerText = item.title;
+    title.classList.add("title");
+    time.classList.add("time");
 
     icon.classList.add("icon");
 
@@ -97,13 +105,40 @@ async function updateList(arr) {
       }
     }
 
+    switch (options.sort) {
+      case "name":
+      case "modified":
+        time.innerText = "Modified: " + getTimestamp(item.modified);
+        break;
+      case "created":
+        time.innerText = "Created: " + getTimestamp(item.created);
+        break;
+      default:
+        time.innerText = "Modified: " + getTimestamp(item.modified);
+        break;
+    }
+
     button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect x="0" fill="none" width="16" height="16"/><path d="M13.66 3.76l-1.42-1.42L8 6.59 3.76 2.34 2.34 3.76 6.59 8l-4.25 4.24 1.42 1.42L8 9.41l4.24 4.25 1.42-1.42L9.41 8 13.66 3.76z"/></svg>`;
     button.classList.add("remove");
 
+    content.appendChild(title);
+    content.appendChild(time);
+    li.appendChild(content);
     li.appendChild(icon);
     li.appendChild(button);
     list.appendChild(li);
   }
+}
+
+function getTimestamp(date) {
+  let dateObj = new Date(date);
+  let options = {
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  return dateObj.toLocaleDateString(undefined, options);
 }
 
 function getSortedList(arr) {
