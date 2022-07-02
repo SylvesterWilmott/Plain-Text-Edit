@@ -23,5 +23,8 @@ An open source, note taking, Chrome extension.
 
 Access options by right-clicking on the extension icon.
 
-- Toggle spellcheck.
 - Choose a sort order.
+- Choose editor line length.
+- Toggle spellcheck.
+- Toggle autcomplete lists.
+- Toggle autocomplete brackets and quotes.
