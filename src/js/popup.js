@@ -2,6 +2,7 @@
 
 import * as storage from "./storage.js";
 import * as i18n from "./localize.js";
+import * as icons from "./icons.js";
 
 let list; // List of notes
 let actions; // List of permanent actions
@@ -82,43 +83,33 @@ async function updateList(arr) {
 
     li.setAttribute("data-id", item.id);
     li.classList.add("item");
-
     content.classList.add("content");
-
     title.innerText = item.title;
     title.classList.add("title");
     time.classList.add("time");
-
     icon.classList.add("icon");
 
-    if (item.text) {
-      let textLength = item.text.length;
-
-      if (textLength < 100) {
-        icon.classList.add("length-1");
-      } else if (textLength < 800) {
-        icon.classList.add("length-2");
-      } else if (textLength < 1200) {
-        icon.classList.add("length-3");
-      } else {
-        icon.classList.add("length-4");
-      }
+    if (item.text.length < 100) {
+      icon.classList.add("length-1");
+    } else if (item.text.length < 800) {
+      icon.classList.add("length-2");
+    } else if (item.text.length < 1200) {
+      icon.classList.add("length-3");
+    } else {
+      icon.classList.add("length-4");
     }
 
     switch (options.sort) {
+      case "created":
+        time.innerText = getTimestamp(item.created);
+        break;
       case "name":
       case "modified":
         time.innerText = getTimestamp(item.modified);
         break;
-      case "created":
-        time.innerText = getTimestamp(item.created);
-        break;
-      default:
-        time.innerText = getTimestamp(item.modified);
-        break;
     }
 
-    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect x="0" fill="none" width="16" height="16"/><path d="M13.66 3.76l-1.42-1.42L8 6.59 3.76 2.34 2.34 3.76 6.59 8l-4.25 4.24 1.42 1.42L8 9.41l4.24 4.25 1.42-1.42L9.41 8 13.66 3.76z"/></svg>`;
+    button.innerHTML = icons.ICON_CLOSE;
     button.classList.add("remove");
 
     content.appendChild(title);
