@@ -108,13 +108,13 @@ async function updateList(arr) {
     switch (options.sort) {
       case "name":
       case "modified":
-        time.innerText = "Modified: " + getTimestamp(item.modified);
+        time.innerText = getTimestamp(item.modified);
         break;
       case "created":
-        time.innerText = "Created: " + getTimestamp(item.created);
+        time.innerText = getTimestamp(item.created);
         break;
       default:
-        time.innerText = "Modified: " + getTimestamp(item.modified);
+        time.innerText = getTimestamp(item.modified);
         break;
     }
 
@@ -132,13 +132,7 @@ async function updateList(arr) {
 
 function getTimestamp(date) {
   let dateObj = new Date(date);
-  let options = {
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return dateObj.toLocaleDateString(undefined, options);
+  return dateObj.toLocaleDateString(undefined);
 }
 
 function getSortedList(arr) {
