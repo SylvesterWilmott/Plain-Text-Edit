@@ -218,7 +218,6 @@ let saveData = debounce(async function (e) {
     docData.created = date;
     docData.text = text;
     docData.caret = caretPos;
-    docData.history = [];
     updateWindowTitle(title);
   }
 
