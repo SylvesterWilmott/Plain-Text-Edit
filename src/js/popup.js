@@ -13,16 +13,26 @@ let options = {};
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
-  list = document.getElementById("list");
-  actions = document.getElementById("actions");
-  options = await getOptions();
-
-  let data = await getData();
-
-  updateList(data);
-  initNavigation();
+  getDOMElements();
+  await loadUserPreferences();
+  await loadInitialDisplayState();
+  setNavigationToInitialState();
   addListeners();
   i18n.localize();
+}
+
+function getDOMElements() {
+  list = document.getElementById("list");
+  actions = document.getElementById("actions");
+}
+
+async function loadUserPreferences() {
+  options = await getOptions();
+}
+
+async function loadInitialDisplayState() {
+  let data = await getData();
+  updateList(data);
 }
 
 function getData() {
@@ -103,7 +113,7 @@ async function updateList(arr) {
       case "created":
         time.innerText = getTimestamp(item.created);
         break;
-      case "name":
+      case "title":
       case "modified":
         time.innerText = getTimestamp(item.modified);
         break;
@@ -156,7 +166,7 @@ function newWindow(uid) {
   window.open("../html/index.html?id=" + uid, "_blank");
 }
 
-function initNavigation() {
+function setNavigationToInitialState() {
   listNavItems = document.querySelectorAll(".item");
 
   for (let [i, item] of listNavItems.entries()) {
@@ -231,7 +241,7 @@ async function deleteItem(uid) {
     await storage.clear(uid);
     let data = await getData();
     updateList(data);
-    initNavigation();
+    setNavigationToInitialState();
   }
 }
 
