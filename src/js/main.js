@@ -206,14 +206,6 @@ let saveData = debounce(async function (e) {
     docData.text = text;
     docData.caret = caretPos;
 
-    if (!docData.history) {
-      docData.history = [];
-    } else if (docData.history.length >= 20) {
-      docData.history.length = 19;
-    }
-
-    docData.history.push(text);
-
     if (title !== docData.title) {
       docData.title = title;
       updateWindowTitle(title);
