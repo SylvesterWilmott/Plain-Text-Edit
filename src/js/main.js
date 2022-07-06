@@ -425,12 +425,8 @@ async function onStorageChanged(changes, namespace) {
   }
 
   if (changes.options) {
-    let options = await getOptions();
-
-    if (options) {
-      resetEditorCss();
-      applyUserPreferences(options);
-    }
+    resetEditorCss();
+    loadUserPreferences();
   }
 }
 
