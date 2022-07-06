@@ -311,6 +311,7 @@ function handleAutoClosure(e) {
       word &&
       word.match(regex.WORD_REGEX) &&
       foundOpen.type === "quote" &&
+      nextChar !== foundOpen.close &&
       !selection
     ) {
       return;
