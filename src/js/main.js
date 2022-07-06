@@ -6,42 +6,40 @@ import * as downloads from "./downloads.js";
 
 let editor;
 let favicon;
-let autoList = true;
-let autoClosure = false;
+let options = {}; // User preferences
 let docId; // The current ID of the loaded doc
 
 document.addEventListener("DOMContentLoaded", init);
 window.addEventListener("load", removeOverlay);
 
 async function init() {
-  initRefs();
-  await initOptions();
-  await initDisplay();
-  initListeners();
+  getDOMElements();
+  await loadUserPreferences();
+  await loadInitialDisplayState();
+  addListeners();
   updateFavicon();
-
   editor.focus();
 }
 
-function initRefs() {
+function getDOMElements() {
   editor = document.getElementById("editor");
   favicon = document.getElementById("favicon");
   docId = getDocId();
 }
 
-async function initOptions() {
-  let options = await getOptions();
+async function loadUserPreferences() {
+  let preferences = await getOptions();
 
-  if (options) {
-    applyOptions(options);
+  if (preferences) {
+    applyUserPreferences(preferences);
   }
 }
 
-async function initDisplay() {
+async function loadInitialDisplayState() {
   let data = await getData();
 
   if (data.id) {
-    updateDisplay(data);
+    updateDisplayState(data);
   } else {
     updateWindowTitle();
   }
@@ -90,17 +88,16 @@ async function getData() {
   return await storage.load(docId, {});
 }
 
-function updateDisplay(data) {
+function updateDisplayState(data) {
   updateEditorValue(data.text);
   updateWindowTitle(data.title);
   updateCaretPosition(data.caret);
 }
 
-function applyOptions(options) {
-  updateSpellCheck(options.spellCheck);
-  addClass(editor, options.lineLength);
-  autoList = options.autoList;
-  autoClosure = options.autoClosure;
+function applyUserPreferences(preferences) {
+  updateSpellCheck(preferences.spellCheck);
+  addClass(editor, preferences.lineLength);
+  options = preferences;
 }
 
 function updateEditorValue(value) {
@@ -314,6 +311,7 @@ function handleAutoClosure(e) {
       word &&
       word.match(regex.WORD_REGEX) &&
       foundOpen.type === "quote" &&
+      nextChar !== foundOpen.close &&
       !selection
     ) {
       return;
@@ -360,7 +358,7 @@ function isValidUrl(str) {
   return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function initListeners() {
+function addListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
     chrome.storage.onChanged.addListener(onStorageChanged);
@@ -388,7 +386,7 @@ function onEditorKeydown(e) {
       insertNode("\t");
       break;
     case "Enter":
-      if (autoList) {
+      if (options.autoList) {
         handleAutoList(e);
       }
       break;
@@ -401,7 +399,7 @@ function onEditorKeydown(e) {
     case ")":
     case "}":
     case "]":
-      if (autoClosure) {
+      if (options.autoClosure) {
         handleAutoClosure(e);
       }
       break;
@@ -413,18 +411,14 @@ async function onStorageChanged(changes, namespace) {
     let data = await getData();
 
     if (data.text) {
-      updateDisplay(data);
+      updateDisplayState(data);
       updateFavicon();
     }
   }
 
   if (changes.options) {
-    let options = await getOptions();
-
-    if (options) {
-      resetEditorCss();
-      applyOptions(options);
-    }
+    resetEditorCss();
+    loadUserPreferences();
   }
 }
 
