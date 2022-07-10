@@ -5,6 +5,9 @@
   "ext_description": {
     "message": "A lightweight, minimal notepad to capture your thoughts."
   },
+  "searchBar_placeholder": {
+    "message": "Search"
+  },
   "new_document": {
     "message": "New"
   },

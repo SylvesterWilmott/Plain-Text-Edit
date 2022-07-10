@@ -11,21 +11,28 @@ body {
   width: 350px;
   opacity: 1;
   overscroll-behavior: none;
+  scrollbar-width: thin;
 }
 
 .list {
   padding: 8px;
-  border-top: 1px solid var(--quaternary);
   list-style: none;
-}
-
-.list:first-child {
-  border: none;
 }
 
 .list:empty {
   padding: 0;
   border: none;
+}
+
+.list:empty::after {
+  content: "No Documents";
+  display: block;
+  padding: 25px 0;
+  width: 100%;
+  color: var(--secondary);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
 }
 
 .item {
@@ -39,7 +46,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .item .content,
@@ -65,7 +72,7 @@ body {
 }
 
 .item .icon {
-  background-image: url(../images/ui/note_length_4.png);
+  background-image: url(../images/ui/note_length_0.png);
   background-size: 16px 16px;
   pointer-events: none;
   height: 16px;
@@ -97,7 +104,7 @@ body {
   display: none;
   height: 20px;
   width: 20px;
-  border-radius: 9999px;
+  border-radius: 999px;
   background-color: transparent;
   position: absolute;
   top: 50%;
@@ -125,4 +132,69 @@ body {
 
 .item:hover .remove {
   display: block;
+}
+
+.action-bar {
+  background-color: var(--surface);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 16px;
+  width: 100%;
+  position: sticky;
+  top: 0;
+}
+
+.search-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.search-bar {
+  color: var(--primary);
+  padding-left: 40px;
+  border: none;
+  outline: none;
+  width: 100%;
+  background-color: var(--quaternary);
+  height: 32px;
+  border-radius: 999px;
+}
+
+.icon-detail {
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  flex: 0 0 20px;
+}
+
+.icon-detail svg {
+  fill: var(--secondary);
+}
+
+.new-button {
+  background-color: transparent;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  height: 32px;
+  padding: 0 8px;
+}
+
+.new-button svg {
+  fill: var(--primary);
+}
+
+.new-button:hover {
+  background-color: var(--quaternary);
 }
