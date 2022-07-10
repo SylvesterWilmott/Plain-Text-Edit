@@ -46,7 +46,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .item .content,
