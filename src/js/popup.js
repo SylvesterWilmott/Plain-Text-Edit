@@ -7,7 +7,7 @@ import * as icons from "./icons.js";
 let list; // List of notes
 let actions; // List of permanent actions
 let listNavItems; // List of elements available for keyboard navigation
-let navIndex = 0; // Index of currently selected element
+let navIndex; // Index of currently selected element
 let options = {};
 
 document.addEventListener("DOMContentLoaded", init);
@@ -187,6 +187,9 @@ function navigateDirection(e) {
 
   switch (e.key) {
     case "ArrowDown":
+      if (!navIndex) {
+        navIndex = 0;
+      }
       if (listNavItems[navIndex].classList.contains("selected")) {
         listNavItems[navIndex].classList.remove("selected");
         navIndex !== listNavItems.length - 1
@@ -197,6 +200,9 @@ function navigateDirection(e) {
       }
       break;
     case "ArrowUp":
+      if (!navIndex) {
+        navIndex = 0;
+      }
       if (listNavItems[navIndex].classList.contains("selected")) {
         listNavItems[navIndex].classList.remove("selected");
         navIndex !== 0 ? navIndex-- : 0;
@@ -217,11 +223,13 @@ function navigateClick(e) {
 
   switch (e.key) {
     case "Enter":
-      el.click();
+      if (el) {
+        el.click();
+      }
       break;
     case "Backspace":
     case "Delete":
-      if (el.parentElement.id !== "actions") {
+      if (el && el.parentElement.id !== "actions") {
         el.querySelector(".remove").click();
       }
       break;
@@ -233,7 +241,7 @@ function removeAllSelections() {
     item.classList.remove("selected");
   }
 
-  navIndex = 0;
+  navIndex = null;
 }
 
 async function deleteItem(uid) {
