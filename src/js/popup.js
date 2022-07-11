@@ -3,6 +3,8 @@
 import * as storage from "./storage.js";
 import * as i18n from "./localize.js";
 import * as icons from "./icons.js";
+import * as regex from "./regex.js";
+import * as keys from "./keys.js";
 
 let searchInput;
 let list; // List of notes
@@ -32,6 +34,7 @@ function getDOMElements() {
 
 function insertStrings() {
   searchInput.placeholder = chrome.i18n.getMessage("searchBar_placeholder");
+  newDocButton.title = chrome.i18n.getMessage("new_document_title");
 }
 
 async function loadUserPreferences() {
@@ -101,7 +104,7 @@ async function updateList(arr) {
     let time = document.createElement("div");
 
     li.setAttribute("data-id", item.id);
-    li.classList.add("item");
+    li.classList.add("item", "nav-index");
     content.classList.add("content");
     title.innerText = item.title;
     title.classList.add("title");
@@ -176,7 +179,7 @@ function newWindow(uid) {
 }
 
 function setNavigationToInitialState() {
-  listNavItems = document.querySelectorAll(".item");
+  listNavItems = document.querySelectorAll(".nav-index");
 
   for (let [i, item] of listNavItems.entries()) {
     item.addEventListener(
@@ -293,19 +296,21 @@ function itemOnMouseover(e) {
 }
 
 function documentOnKeydown(e) {
-  switch (e.key) {
-    case "ArrowDown":
-    case "ArrowUp":
-      navigateDirection(e);
-      if (document.activeElement === search) {
-        search.blur();
-      }
-      break;
-    case "Enter":
-    case "Backspace":
-    case "Delete":
-      navigateClick(e);
-      break;
+  if (e.key === keys.ARROW_DOWN_KEY || e.key === keys.ARROW_UP_KEY) {
+    if (document.activeElement === search) {
+      search.blur();
+    }
+    navigateDirection(e);
+  } else if (
+    e.key === keys.ENTER_KEY ||
+    e.key === keys.BACKSPACE_KEY ||
+    e.key === keys.DELETE_KEY
+  ) {
+    navigateClick(e);
+  } else if (e.key.match(regex.CHARACTER_REGEX)) {
+    if (document.activeElement !== search) {
+      search.focus();
+    }
   }
 }
 
