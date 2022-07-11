@@ -24,6 +24,7 @@ async function init() {
   setNavigationToInitialState();
   addListeners();
   i18n.localize();
+  removeOverlay();
 }
 
 function getDOMElements() {
@@ -265,6 +266,10 @@ async function deleteItem(uid) {
 
 function scrollToTop() {
   window.scrollTo(0, 0);
+}
+
+function removeOverlay() {
+  document.body.classList.remove("loading");
 }
 
 // Event handlers

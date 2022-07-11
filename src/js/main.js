@@ -10,7 +10,6 @@ let options = {}; // User preferences
 let docId; // The current ID of the loaded doc
 
 document.addEventListener("DOMContentLoaded", init);
-window.addEventListener("load", removeOverlay);
 
 async function init() {
   getDOMElements();
@@ -18,6 +17,7 @@ async function init() {
   await loadInitialDisplayState();
   addListeners();
   updateFavicon();
+  removeOverlay();
   editor.focus();
 }
 
