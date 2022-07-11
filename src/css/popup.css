@@ -77,7 +77,7 @@ body.loading {
 
 .item.selected,
 .new-button.selected {
-  background-color: var(--quinary);
+  background-color: var(--quaternary);
 }
 
 .item .icon {
@@ -122,7 +122,7 @@ body.loading {
 }
 
 .item .remove:hover {
-  background-color: var(--quaternary);
+  background-color: var(--tertiary);
 }
 
 .item .remove:hover svg {
@@ -172,7 +172,7 @@ body.loading {
   width: 100%;
   background-color: transparent;
   height: 32px;
-  border: 1px solid var(--quaternary);
+  border: 1px solid var(--tertiary);
   border-radius: 999px;
 }
 
