@@ -67,7 +67,8 @@ body {
   color: var(--secondary);
 }
 
-.item.selected {
+.item.selected,
+.new-button.selected {
   background-color: var(--quinary);
 }
 
@@ -126,11 +127,11 @@ body {
   padding: 4px;
 }
 
-.item:hover {
+.item.selected {
   padding-right: 52px;
 }
 
-.item:hover .remove {
+.item.selected .remove {
   display: block;
 }
 
@@ -194,8 +195,4 @@ body {
 
 .new-button svg {
   fill: var(--primary);
-}
-
-.new-button:hover {
-  background-color: var(--quaternary);
 }
