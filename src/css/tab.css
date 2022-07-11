@@ -55,35 +55,6 @@ body.loading {
   color: transparent;
 }
 
-.actions {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-}
-
-.actions button {
-  appearance: none;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  height: 36px;
-  width: 40px;
-  border-radius: 6px;
-}
-
-.actions button:hover {
-  background-color: var(--quaternary);
-}
-
-.actions button:active {
-  background-color: var(--tertiary);
-}
-
-.actions button svg {
-  pointer-events: none;
-  fill: var(--secondary);
-}
-
 .print-helper {
   display: none;
 }
