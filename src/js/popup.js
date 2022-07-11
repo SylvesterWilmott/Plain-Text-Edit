@@ -3,27 +3,39 @@
 import * as storage from "./storage.js";
 import * as i18n from "./localize.js";
 import * as icons from "./icons.js";
+import * as regex from "./regex.js";
+import * as keys from "./keys.js";
 
+let searchInput;
 let list; // List of notes
-let actions; // List of permanent actions
+let newDocButton;
 let listNavItems; // List of elements available for keyboard navigation
 let navIndex; // Index of currently selected element
+let docData;
 let options = {};
 
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   getDOMElements();
+  insertStrings();
   await loadUserPreferences();
   await loadInitialDisplayState();
   setNavigationToInitialState();
   addListeners();
   i18n.localize();
+  removeOverlay();
 }
 
 function getDOMElements() {
   list = document.getElementById("list");
-  actions = document.getElementById("actions");
+  newDocButton = document.getElementById("new");
+  searchInput = document.getElementById("search");
+}
+
+function insertStrings() {
+  searchInput.placeholder = chrome.i18n.getMessage("searchBar_placeholder");
+  newDocButton.title = chrome.i18n.getMessage("new_document_title");
 }
 
 async function loadUserPreferences() {
@@ -31,8 +43,8 @@ async function loadUserPreferences() {
 }
 
 async function loadInitialDisplayState() {
-  let data = await getData();
-  updateList(data);
+  docData = await getData();
+  updateList(docData);
 }
 
 function getData() {
@@ -58,7 +70,8 @@ function getData() {
 
 function addListeners() {
   list.addEventListener("click", onListClick, false);
-  actions.addEventListener("click", onActionsClick, false);
+  searchInput.addEventListener("input", searchInputOnInput, false);
+  newDocButton.addEventListener("click", onnewDocButtonClick, false);
   document.addEventListener("keydown", documentOnKeydown, false);
   document.addEventListener("mouseout", documentOnMouseout, false);
 }
@@ -92,7 +105,7 @@ async function updateList(arr) {
     let time = document.createElement("div");
 
     li.setAttribute("data-id", item.id);
-    li.classList.add("item");
+    li.classList.add("item", "nav-index");
     content.classList.add("content");
     title.innerText = item.title;
     title.classList.add("title");
@@ -167,7 +180,7 @@ function newWindow(uid) {
 }
 
 function setNavigationToInitialState() {
-  listNavItems = document.querySelectorAll(".item");
+  listNavItems = document.querySelectorAll(".nav-index");
 
   for (let [i, item] of listNavItems.entries()) {
     item.addEventListener(
@@ -217,8 +230,6 @@ function navigateDirection(e) {
 }
 
 function navigateClick(e) {
-  e.preventDefault();
-
   let el = listNavItems[navIndex];
 
   switch (e.key) {
@@ -229,7 +240,7 @@ function navigateClick(e) {
       break;
     case "Backspace":
     case "Delete":
-      if (el && el.parentElement.id !== "actions") {
+      if (el && document.activeElement !== search) {
         el.querySelector(".remove").click();
       }
       break;
@@ -253,6 +264,14 @@ async function deleteItem(uid) {
   }
 }
 
+function scrollToTop() {
+  window.scrollTo(0, 0);
+}
+
+function removeOverlay() {
+  document.body.classList.remove("loading");
+}
+
 // Event handlers
 
 function documentOnMouseout(e) {
@@ -270,13 +289,9 @@ async function onListClick(e) {
   }
 }
 
-function onActionsClick(e) {
-  let el = listNavItems[navIndex];
-
-  if (el.id === "new") {
-    let uid = createNewUid();
-    newWindow(uid);
-  }
+function onnewDocButtonClick(e) {
+  let uid = createNewUid();
+  newWindow(uid);
 }
 
 function itemOnMouseover(e) {
@@ -286,15 +301,32 @@ function itemOnMouseover(e) {
 }
 
 function documentOnKeydown(e) {
-  switch (e.key) {
-    case "ArrowDown":
-    case "ArrowUp":
-      navigateDirection(e);
-      break;
-    case "Enter":
-    case "Backspace":
-    case "Delete":
-      navigateClick(e);
-      break;
+  if (e.key === keys.ARROW_DOWN_KEY || e.key === keys.ARROW_UP_KEY) {
+    if (document.activeElement === search) {
+      search.blur();
+    }
+    navigateDirection(e);
+  } else if (
+    e.key === keys.ENTER_KEY ||
+    e.key === keys.BACKSPACE_KEY ||
+    e.key === keys.DELETE_KEY
+  ) {
+    navigateClick(e);
+  } else if (e.key.match(regex.CHARACTER_REGEX)) {
+    if (document.activeElement !== search) {
+      search.focus();
+    }
   }
+}
+
+function searchInputOnInput() {
+  let searchInputText = searchInput.value;
+  let filtered = docData.filter(
+    (item) =>
+      item.text.toLowerCase().indexOf(searchInputText.toLowerCase()) > -1
+  );
+
+  updateList(filtered);
+  setNavigationToInitialState();
+  scrollToTop(); // Always stay scrolled to top while searching
 }
