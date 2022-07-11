@@ -68,7 +68,7 @@ body {
 }
 
 .item.selected {
-  background-color: var(--quaternary);
+  background-color: var(--quinary);
 }
 
 .item .icon {
@@ -140,7 +140,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 52px;
+  height: 56px;
   padding: 0 16px;
   width: 100%;
   position: sticky;
@@ -161,8 +161,9 @@ body {
   border: none;
   outline: none;
   width: 100%;
-  background-color: var(--quaternary);
+  background-color: transparent;
   height: 32px;
+  border: 1px solid var(--quaternary);
   border-radius: 999px;
 }
 
