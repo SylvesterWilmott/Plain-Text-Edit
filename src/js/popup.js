@@ -74,6 +74,7 @@ function addListeners() {
   newDocButton.addEventListener("click", onnewDocButtonClick, false);
   document.addEventListener("keydown", documentOnKeydown, false);
   document.addEventListener("mouseout", documentOnMouseout, false);
+  window.addEventListener("scroll", windowOnScroll, false);
 }
 
 async function getOptions() {
@@ -329,4 +330,14 @@ function searchInputOnInput() {
   updateList(filtered);
   setNavigationToInitialState();
   scrollToTop(); // Always stay scrolled to top while searching
+}
+
+function windowOnScroll() {
+  let header = document.getElementById("header");
+
+  if (window.pageYOffset > 0) {
+    header.classList.add("shadow");
+  } else {
+    header.classList.remove("shadow");
+  }
 }

@@ -156,6 +156,10 @@ body.loading {
   top: 0;
 }
 
+.action-bar.shadow {
+  box-shadow: 0px 1px 3px 0px var(--shadow);
+}
+
 .search-area {
   position: relative;
   display: flex;
