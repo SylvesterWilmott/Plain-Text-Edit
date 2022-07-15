@@ -12,6 +12,7 @@
   --secondary: rgba(0, 0, 0, 0.5);
   --tertiary: rgba(0, 0, 0, 0.13);
   --quaternary: rgba(0, 0, 0, 0.08);
+  --shadow: rgba(0,0,0,0.1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,5 +25,6 @@
     --secondary: rgba(255, 255, 255, 0.5);
     --tertiary: rgba(255, 255, 255, 0.13);
     --quaternary: rgba(255, 255, 255, 0.08);
+    --shadow: rgba(0,0,0,0.3);
   }
 }
