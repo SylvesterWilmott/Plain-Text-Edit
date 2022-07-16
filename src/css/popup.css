@@ -169,6 +169,7 @@ body.loading {
 }
 
 .search-bar {
+  font-family: var(--font-sans);
   color: var(--primary);
   padding-left: 40px;
   border: none;
