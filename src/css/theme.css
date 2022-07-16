@@ -1,15 +1,15 @@
 :root {
   color-scheme: light;
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Oxygen-Sans,
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Oxygen-Sans,
     Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   --font-mono: "Cousine", "SF Mono", SFMono-Regular, ui-monospace, Menlo,
     Consolas, Monaco, "Liberation Mono", "Lucida Console", monospace;
 
   --background: #F8F8F8;
   --surface:    #FFFFFF;
-  --primary: rgba(0, 0, 0, 0.85);
-  --secondary: rgba(0, 0, 0, 0.5);
+  --primary: rgba(0, 0, 0, 0.9);
+  --secondary: rgba(0, 0, 0, 0.6);
   --tertiary: rgba(0, 0, 0, 0.13);
   --quaternary: rgba(0, 0, 0, 0.08);
   --shadow: rgba(0,0,0,0.1);
@@ -21,8 +21,8 @@
 
     --background: #202124;
     --surface: #292A2D;
-    --primary: rgba(255, 255, 255, 0.85);
-    --secondary: rgba(255, 255, 255, 0.5);
+    --primary: rgba(255, 255, 255, 0.9);
+    --secondary: rgba(255, 255, 255, 0.6);
     --tertiary: rgba(255, 255, 255, 0.13);
     --quaternary: rgba(255, 255, 255, 0.08);
     --shadow: rgba(0,0,0,0.3);
