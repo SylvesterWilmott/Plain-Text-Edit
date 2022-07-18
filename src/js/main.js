@@ -157,6 +157,11 @@ function getCurrentWord() {
   };
 }
 
+function makeSelection(start, end) {
+  editor.selectionStart = start + 1;
+  editor.selectionEnd = end;
+}
+
 function removeOverlay() {
   document.body.classList.remove("loading"); // Remove overlay
 }
@@ -376,6 +381,15 @@ function addListeners() {
 async function onEditorInput() {
   await saveData();
   updateFavicon();
+}
+
+function onEditorContextMenu() {
+  let wordObj = getCurrentWord();
+  let selection = window.getSelection().toString();
+
+  if (!selection && isValidUrl(wordObj.word)) {
+    makeSelection(wordObj.start, wordObj.end);
+  }
 }
 
 function onEditorKeydown(e) {
