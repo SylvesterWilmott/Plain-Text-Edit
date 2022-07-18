@@ -157,6 +157,11 @@ function getCurrentWord() {
   };
 }
 
+function makeSelection(start, end) {
+  editor.selectionStart = start + 1;
+  editor.selectionEnd = end;
+}
+
 function removeOverlay() {
   document.body.classList.remove("loading"); // Remove overlay
 }
@@ -361,6 +366,7 @@ function isValidUrl(str) {
 function addListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
+    editor.addEventListener("contextmenu", onEditorContextMenu, false);
     chrome.storage.onChanged.addListener(onStorageChanged);
   }
 
@@ -375,6 +381,15 @@ function addListeners() {
 async function onEditorInput() {
   await saveData();
   updateFavicon();
+}
+
+function onEditorContextMenu() {
+  let wordObj = getCurrentWord();
+  let selection = window.getSelection().toString();
+
+  if (!selection && isValidUrl(wordObj.word)) {
+    makeSelection(wordObj.start, wordObj.end);
+  }
 }
 
 function onEditorKeydown(e) {
