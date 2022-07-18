@@ -80,6 +80,7 @@ async function getOptions() {
     spellCheck: true,
     autoList: true,
     autoClosure: false,
+    selectURLs: true,
     lineLength: "narrow",
   });
 }
@@ -155,6 +156,23 @@ function getCurrentWord() {
     end: end,
     word: word,
   };
+}
+
+function makeSelection(start, end) {
+  editor.selectionStart = start + 1;
+  editor.selectionEnd = end;
+}
+
+function isValidUrl(str) {
+  let url;
+
+  try {
+    url = new URL(str);
+  } catch (_) {
+    return false;
+  }
+
+  return url.protocol === "http:" || url.protocol === "https:";
 }
 
 function removeOverlay() {
@@ -346,21 +364,10 @@ function moveCaret(n) {
   }
 }
 
-function isValidUrl(str) {
-  let url;
-
-  try {
-    url = new URL(str);
-  } catch (_) {
-    return false;
-  }
-
-  return url.protocol === "http:" || url.protocol === "https:";
-}
-
 function addListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
+    editor.addEventListener("contextmenu", onEditorContextMenu, false);
     chrome.storage.onChanged.addListener(onStorageChanged);
   }
 
@@ -375,6 +382,17 @@ function addListeners() {
 async function onEditorInput() {
   await saveData();
   updateFavicon();
+}
+
+function onEditorContextMenu() {
+  if (options.selectURLs) {
+    let wordObj = getCurrentWord();
+    let selection = window.getSelection().toString();
+
+    if (!selection && isValidUrl(wordObj.word)) {
+      makeSelection(wordObj.start, wordObj.end);
+    }
+  }
 }
 
 function onEditorKeydown(e) {
