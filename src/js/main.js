@@ -361,6 +361,7 @@ function isValidUrl(str) {
 function addListeners() {
   if (docId) {
     editor.addEventListener("input", onEditorInput, false);
+    editor.addEventListener("contextmenu", onEditorContextMenu, false);
     chrome.storage.onChanged.addListener(onStorageChanged);
   }
 
